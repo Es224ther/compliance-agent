@@ -1,0 +1,9 @@
+[
+  {
+    "id": "demo-001",
+    "title": "Cross-border data transfer",
+    "description": "A US-based SaaS company transfers EU customer data to servers in India without a data processing agreement.",
+    "jurisdiction": ["EU", "US", "IN"],
+    "domains": ["data_privacy", "GDPR"]
+  }
+]

@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "compliance-agent"
+version = "0.1.0"
+description = "Foundational scaffold for the Compliance Agent project."
+authors = ["taopang"]
+readme = "README.md"
+packages = [
+  { include = "app" },
+  { include = "agents" },
+  { include = "config" },
+  { include = "guards" },
+  { include = "sanitizer" },
+  { include = "tools" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = ">=0.111"
+uvicorn = { version = "*", extras = ["standard"] }
+pydantic-settings = ">=2.0"
+presidio-analyzer = "*"
+presidio-anonymizer = "*"
+spacy = "*"
+anthropic = ">=0.30"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+pytest-asyncio = "*"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,6 @@
+anthropic
+pydantic
+fastapi
+uvicorn
+chromadb
+python-dotenv

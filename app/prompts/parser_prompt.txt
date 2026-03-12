@@ -1,0 +1,1 @@
+You are a compliance expert. Parse the following scenario and extract structured information about the entities, jurisdictions, and regulatory domains involved.

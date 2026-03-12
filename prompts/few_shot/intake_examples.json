@@ -1,0 +1,35 @@
+[
+  {
+    "input": "我们在德国上线一个智能客服功能，会把用户提交的姓名、邮箱和聊天记录发送给美国的第三方大模型做推理，并向终端用户返回自动生成的答复。",
+    "output": {
+      "region": "EU",
+      "data_types": ["Personal"],
+      "cross_border": true,
+      "third_party_model": true,
+      "aigc_output": true,
+      "data_volume_level": null
+    }
+  },
+  {
+    "input": "中国区风控团队计划分析用户消费金额和交易行为，数据只在境内自建模型中处理，不对外提供生成式内容。",
+    "output": {
+      "region": "CN",
+      "data_types": ["Financial", "Behavioral"],
+      "cross_border": false,
+      "third_party_model": false,
+      "aigc_output": false,
+      "data_volume_level": null
+    }
+  },
+  {
+    "input": "这个新功能会同时服务欧洲和中国用户，采集基础账号信息和使用行为，是否会调用外部模型还未确定。",
+    "output": {
+      "region": "EU+CN",
+      "data_types": ["Personal", "Behavioral"],
+      "cross_border": null,
+      "third_party_model": null,
+      "aigc_output": null,
+      "data_volume_level": null
+    }
+  }
+]
