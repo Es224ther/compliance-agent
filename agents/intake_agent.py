@@ -150,7 +150,8 @@ class IntakeAgent(ReActAgent):
 
     @staticmethod
     def _load_examples(path: Path) -> list[dict[str, Any]]:
-        return json.loads(path.read_text(encoding="utf-8"))
+        examples = json.loads(path.read_text(encoding="utf-8"))
+        return examples[:3]
 
     @staticmethod
     def _build_parse_tool_schema() -> dict[str, Any]:

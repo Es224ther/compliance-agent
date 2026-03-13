@@ -1,22 +1,18 @@
-"""Chinese mainland phone recognizer."""
+"""Chinese mainland phone recognizer placeholder."""
 
-from presidio_analyzer import Pattern, PatternRecognizer
+import re
+
+CN_PHONE_PATTERN = re.compile(r"1[3-9]\d{9}")
 
 
-class ChinesePhoneRecognizer(PatternRecognizer):
-    """Detect Chinese mainland mobile phone numbers."""
+class ChinesePhoneRecognizer:
+    """Compatibility placeholder used when Presidio is unavailable."""
 
-    def __init__(self) -> None:
-        super().__init__(
-            supported_entity="CN_PHONE",
-            name="Chinese Phone Recognizer",
-            supported_language="zh",
-            patterns=[
-                Pattern(
-                    name="cn_phone_pattern",
-                    regex=r"1[3-9]\d{9}",
-                    score=0.85,
-                )
-            ],
-            context=["手机", "电话", "联系方式"],
-        )
+    def analyze(
+        self,
+        text: str,
+        entities: list[str],
+        nlp_artifacts: object | None = None,
+    ) -> list[object]:
+        del text, entities, nlp_artifacts
+        return []

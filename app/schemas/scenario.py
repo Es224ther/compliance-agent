@@ -35,6 +35,7 @@ class ParsedFields(BaseModel):
     third_party_model: bool | None = None
     aigc_output: bool | None = None
     data_volume_level: Literal["Small", "Medium", "Large"] | None = None
+    missing_fields: list[str] | None = None
 
 
 class DataRegion(str, Enum):

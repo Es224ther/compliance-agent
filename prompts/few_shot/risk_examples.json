@@ -1,0 +1,86 @@
+[
+  {
+    "input": {
+      "parsed_fields": {
+        "region": "EU+CN",
+        "data_types": ["Biometric", "Personal"],
+        "cross_border": true,
+        "third_party_model": true,
+        "aigc_output": false
+      },
+      "risk_scorer": {
+        "risk_level": "Critical"
+      }
+    },
+    "output": {
+      "risk_level": "Critical",
+      "risk_summary": "Biometric + cross-border obligations create elevated uncertainty.",
+      "reasoning": "【EU 合规要求】...\n【CN 合规要求】...\n【跨法域注意事项】...",
+      "jurisdictions_covered": ["EU", "CN"],
+      "evidence": [],
+      "remediation": [],
+      "low_confidence_items": [],
+      "requires_escalation": true,
+      "scoring_factors": [
+        {
+          "rule": "biometric_force_critical",
+          "description": "Biometric data present → force Critical",
+          "impact": "force Critical"
+        }
+      ]
+    },
+    "rationale": "Dual jurisdiction and biometric flow require strict escalation in examples."
+  },
+  {
+    "input": {
+      "parsed_fields": {
+        "region": "EU",
+        "data_types": ["Personal"],
+        "cross_border": true,
+        "third_party_model": true,
+        "aigc_output": false
+      },
+      "risk_scorer": {
+        "risk_level": "High"
+      }
+    },
+    "output": {
+      "risk_level": "High",
+      "risk_summary": "Third-party transfer introduces significant compliance burden.",
+      "reasoning": "【EU 合规要求】...",
+      "jurisdictions_covered": ["EU"],
+      "evidence": [],
+      "remediation": [],
+      "low_confidence_items": [],
+      "requires_escalation": false,
+      "scoring_factors": []
+    },
+    "rationale": "Single-jurisdiction but transfer to external model remains high risk."
+  },
+  {
+    "input": {
+      "parsed_fields": {
+        "region": "EU+CN",
+        "data_types": ["Personal"],
+        "cross_border": false,
+        "third_party_model": false,
+        "aigc_output": true
+      },
+      "risk_scorer": {
+        "risk_level": "High"
+      }
+    },
+    "output": {
+      "risk_level": "High",
+      "risk_summary": "AIGC output with dual jurisdictions increases compliance complexity.",
+      "reasoning": "【EU 合规要求】...\n【CN 合规要求】...\n【跨法域注意事项】...",
+      "jurisdictions_covered": ["EU", "CN"],
+      "evidence": [],
+      "remediation": [],
+      "low_confidence_items": [],
+      "requires_escalation": false,
+      "scoring_factors": []
+    },
+    "rationale": "Cross-jurisdiction AIGC has additive complexity from both frameworks."
+  }
+]
