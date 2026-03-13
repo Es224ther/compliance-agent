@@ -9,4 +9,4 @@ test:
 	$(PYTHON) -m pytest
 
 ingest:
-	$(PYTHON) -m app.rag.ingest
+	$(PYTHON) scripts/ingest_regulations.py --skip-summary

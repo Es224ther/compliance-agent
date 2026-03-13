@@ -2,26 +2,26 @@
 name = "compliance-agent"
 version = "0.1.0"
 description = "Foundational scaffold for the Compliance Agent project."
-authors = ["taopang"]
+authors = ["Es224ther"]
 readme = "README.md"
 packages = [
   { include = "app" },
-  { include = "agents" },
   { include = "config" },
-  { include = "guards" },
-  { include = "sanitizer" },
-  { include = "tools" },
 ]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 fastapi = ">=0.111"
+
 uvicorn = { version = "*", extras = ["standard"] }
 pydantic-settings = ">=2.0"
 presidio-analyzer = "*"
 presidio-anonymizer = "*"
 spacy = "*"
 anthropic = ">=0.30"
+chromadb = "*"
+sentence-transformers = "*"
+jieba = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"

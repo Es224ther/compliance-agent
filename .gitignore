@@ -25,3 +25,8 @@ __pycache__/
 data/regulations/
 data/chroma/
 data/*.db
+data/kb/vectors/
+data/kb/summary_cache.json
+
+# 8. 忽略评测输出
+eval/results.csv

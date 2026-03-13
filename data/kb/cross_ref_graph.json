@@ -1,0 +1,1124 @@
+{
+  "aigc_marking_art1": [],
+  "aigc_marking_art12": [],
+  "aigc_marking_art13": [],
+  "aigc_marking_art2": [],
+  "aigc_marking_art4": [],
+  "aigc_marking_art5": [],
+  "aigc_marking_art7": [],
+  "aigc_marking_art8": [],
+  "aigc_marking_art9": [],
+  "csl_art1": [],
+  "csl_art10": [],
+  "csl_art11": [],
+  "csl_art12": [],
+  "csl_art13": [],
+  "csl_art14": [],
+  "csl_art15": [],
+  "csl_art16": [],
+  "csl_art19": [],
+  "csl_art20": [],
+  "csl_art21": [],
+  "csl_art22": [],
+  "csl_art23": [],
+  "csl_art24": [],
+  "csl_art25": [],
+  "csl_art26": [],
+  "csl_art27": [],
+  "csl_art29": [],
+  "csl_art3": [],
+  "csl_art31": [],
+  "csl_art32": [],
+  "csl_art33": [
+    "csl_art21"
+  ],
+  "csl_art35": [],
+  "csl_art36": [],
+  "csl_art37": [],
+  "csl_art38": [],
+  "csl_art4": [],
+  "csl_art41": [],
+  "csl_art42": [],
+  "csl_art43": [],
+  "csl_art45": [],
+  "csl_art46": [],
+  "csl_art47": [],
+  "csl_art48": [],
+  "csl_art49": [],
+  "csl_art5": [],
+  "csl_art50": [],
+  "csl_art51": [],
+  "csl_art52": [],
+  "csl_art53": [],
+  "csl_art54": [],
+  "csl_art55": [],
+  "csl_art56": [],
+  "csl_art57": [],
+  "csl_art58": [],
+  "csl_art59": [
+    "csl_art21",
+    "csl_art25"
+  ],
+  "csl_art6": [],
+  "csl_art60": [
+    "csl_art22",
+    "csl_art48"
+  ],
+  "csl_art61": [
+    "csl_art24"
+  ],
+  "csl_art62": [
+    "csl_art26"
+  ],
+  "csl_art63": [
+    "csl_art27"
+  ],
+  "csl_art64": [
+    "csl_art22",
+    "csl_art41",
+    "csl_art43"
+  ],
+  "csl_art65": [
+    "csl_art35"
+  ],
+  "csl_art66": [
+    "csl_art37"
+  ],
+  "csl_art67": [
+    "csl_art46"
+  ],
+  "csl_art68": [
+    "csl_art47"
+  ],
+  "csl_art69": [],
+  "csl_art7": [],
+  "csl_art70": [
+    "csl_art12"
+  ],
+  "csl_art72": [],
+  "csl_art73": [],
+  "csl_art75": [],
+  "csl_art8": [],
+  "csl_art9": [],
+  "dsl_art1": [],
+  "dsl_art10": [],
+  "dsl_art11": [],
+  "dsl_art12": [],
+  "dsl_art14": [],
+  "dsl_art15": [],
+  "dsl_art16": [],
+  "dsl_art17": [],
+  "dsl_art18": [],
+  "dsl_art2": [],
+  "dsl_art20": [],
+  "dsl_art21": [],
+  "dsl_art22": [],
+  "dsl_art23": [],
+  "dsl_art24": [],
+  "dsl_art26": [],
+  "dsl_art27": [],
+  "dsl_art29": [],
+  "dsl_art3": [],
+  "dsl_art30": [],
+  "dsl_art31": [],
+  "dsl_art32": [],
+  "dsl_art33": [],
+  "dsl_art35": [],
+  "dsl_art36": [],
+  "dsl_art38": [],
+  "dsl_art40": [],
+  "dsl_art44": [],
+  "dsl_art45": [
+    "dsl_art27",
+    "dsl_art29",
+    "dsl_art30"
+  ],
+  "dsl_art46": [
+    "dsl_art31"
+  ],
+  "dsl_art47": [
+    "dsl_art33"
+  ],
+  "dsl_art48": [
+    "dsl_art35",
+    "dsl_art36"
+  ],
+  "dsl_art5": [],
+  "dsl_art51": [],
+  "dsl_art52": [],
+  "dsl_art53": [],
+  "dsl_art6": [],
+  "dsl_art7": [],
+  "dsl_art8": [],
+  "dsl_art9": [],
+  "eu_ai_act_art1": [],
+  "eu_ai_act_art10": [],
+  "eu_ai_act_art100": [
+    "eu_ai_act_art5_p1"
+  ],
+  "eu_ai_act_art101": [
+    "eu_ai_act_art91",
+    "eu_ai_act_art93",
+    "eu_ai_act_art92",
+    "eu_ai_act_art56"
+  ],
+  "eu_ai_act_art102": [
+    "eu_ai_act_art4"
+  ],
+  "eu_ai_act_art103": [
+    "eu_ai_act_art17"
+  ],
+  "eu_ai_act_art104": [
+    "eu_ai_act_art22"
+  ],
+  "eu_ai_act_art105": [
+    "eu_ai_act_art8"
+  ],
+  "eu_ai_act_art106": [
+    "eu_ai_act_art5_p1"
+  ],
+  "eu_ai_act_art107": [
+    "eu_ai_act_art5_p1"
+  ],
+  "eu_ai_act_art108": [
+    "eu_ai_act_art17",
+    "eu_ai_act_art19",
+    "eu_ai_act_art43_p1",
+    "eu_ai_act_art47",
+    "eu_ai_act_art57_p1",
+    "eu_ai_act_art58"
+  ],
+  "eu_ai_act_art109": [
+    "eu_ai_act_art11"
+  ],
+  "eu_ai_act_art11": [
+    "eu_ai_act_art97"
+  ],
+  "eu_ai_act_art110": [],
+  "eu_ai_act_art111": [
+    "eu_ai_act_art5_p1",
+    "eu_ai_act_art113_p1"
+  ],
+  "eu_ai_act_art112_p1": [
+    "eu_ai_act_art5_p1",
+    "eu_ai_act_art97",
+    "eu_ai_act_art50",
+    "eu_ai_act_art99_p1"
+  ],
+  "eu_ai_act_art112_p2": [],
+  "eu_ai_act_art113_p1": [
+    "eu_ai_act_art78",
+    "eu_ai_act_art101",
+    "eu_ai_act_art6"
+  ],
+  "eu_ai_act_art113_p10": [
+    "eu_ai_act_art53",
+    "eu_ai_act_art51"
+  ],
+  "eu_ai_act_art113_p2": [
+    "eu_ai_act_art2_p1",
+    "eu_ai_act_art5_p1",
+    "eu_ai_act_art6"
+  ],
+  "eu_ai_act_art113_p3": [
+    "eu_ai_act_art3_p1"
+  ],
+  "eu_ai_act_art113_p4": [
+    "eu_ai_act_art11",
+    "eu_ai_act_art14",
+    "eu_ai_act_art13"
+  ],
+  "eu_ai_act_art113_p5": [
+    "eu_ai_act_art14",
+    "eu_ai_act_art9",
+    "eu_ai_act_art47",
+    "eu_ai_act_art72",
+    "eu_ai_act_art17"
+  ],
+  "eu_ai_act_art113_p6": [
+    "eu_ai_act_art17"
+  ],
+  "eu_ai_act_art113_p7": [
+    "eu_ai_act_art43_p1",
+    "eu_ai_act_art49",
+    "eu_ai_act_art47",
+    "eu_ai_act_art6"
+  ],
+  "eu_ai_act_art113_p8": [
+    "eu_ai_act_art49",
+    "eu_ai_act_art27",
+    "eu_ai_act_art35",
+    "eu_ai_act_art26_p1",
+    "eu_ai_act_art60_p1"
+  ],
+  "eu_ai_act_art113_p9": [
+    "eu_ai_act_art53"
+  ],
+  "eu_ai_act_art12": [
+    "eu_ai_act_art79_p1",
+    "eu_ai_act_art72",
+    "eu_ai_act_art26_p1",
+    "eu_ai_act_art14"
+  ],
+  "eu_ai_act_art13": [
+    "eu_ai_act_art15",
+    "eu_ai_act_art9",
+    "eu_ai_act_art14",
+    "eu_ai_act_art12"
+  ],
+  "eu_ai_act_art14": [],
+  "eu_ai_act_art15": [],
+  "eu_ai_act_art16": [
+    "eu_ai_act_art17",
+    "eu_ai_act_art18",
+    "eu_ai_act_art19",
+    "eu_ai_act_art43_p1",
+    "eu_ai_act_art47",
+    "eu_ai_act_art48",
+    "eu_ai_act_art49",
+    "eu_ai_act_art20"
+  ],
+  "eu_ai_act_art17": [
+    "eu_ai_act_art9",
+    "eu_ai_act_art72",
+    "eu_ai_act_art73",
+    "eu_ai_act_art40"
+  ],
+  "eu_ai_act_art18": [
+    "eu_ai_act_art11",
+    "eu_ai_act_art17",
+    "eu_ai_act_art47"
+  ],
+  "eu_ai_act_art19": [
+    "eu_ai_act_art12"
+  ],
+  "eu_ai_act_art20": [
+    "eu_ai_act_art79_p1",
+    "eu_ai_act_art44"
+  ],
+  "eu_ai_act_art21": [
+    "eu_ai_act_art12",
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art22": [
+    "eu_ai_act_art47",
+    "eu_ai_act_art11",
+    "eu_ai_act_art74_p1",
+    "eu_ai_act_art12",
+    "eu_ai_act_art49"
+  ],
+  "eu_ai_act_art23": [
+    "eu_ai_act_art43_p1",
+    "eu_ai_act_art11",
+    "eu_ai_act_art47",
+    "eu_ai_act_art22",
+    "eu_ai_act_art79_p1"
+  ],
+  "eu_ai_act_art24": [
+    "eu_ai_act_art47",
+    "eu_ai_act_art16",
+    "eu_ai_act_art23",
+    "eu_ai_act_art79_p1"
+  ],
+  "eu_ai_act_art25": [
+    "eu_ai_act_art16",
+    "eu_ai_act_art6"
+  ],
+  "eu_ai_act_art26_p1": [
+    "eu_ai_act_art72",
+    "eu_ai_act_art79_p1",
+    "eu_ai_act_art73",
+    "eu_ai_act_art49",
+    "eu_ai_act_art71",
+    "eu_ai_act_art13",
+    "eu_ai_act_art35",
+    "eu_ai_act_art27"
+  ],
+  "eu_ai_act_art26_p2": [
+    "eu_ai_act_art9",
+    "eu_ai_act_art10",
+    "eu_ai_act_art50",
+    "eu_ai_act_art13"
+  ],
+  "eu_ai_act_art27": [
+    "eu_ai_act_art6",
+    "eu_ai_act_art13",
+    "eu_ai_act_art46",
+    "eu_ai_act_art35",
+    "eu_ai_act_art27"
+  ],
+  "eu_ai_act_art28": [
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art29": [
+    "eu_ai_act_art31"
+  ],
+  "eu_ai_act_art2_p1": [
+    "eu_ai_act_art6",
+    "eu_ai_act_art112_p1",
+    "eu_ai_act_art57_p1",
+    "eu_ai_act_art10",
+    "eu_ai_act_art59",
+    "eu_ai_act_art5_p1"
+  ],
+  "eu_ai_act_art30": [
+    "eu_ai_act_art31",
+    "eu_ai_act_art29"
+  ],
+  "eu_ai_act_art31": [
+    "eu_ai_act_art78",
+    "eu_ai_act_art38"
+  ],
+  "eu_ai_act_art32": [
+    "eu_ai_act_art31"
+  ],
+  "eu_ai_act_art33": [
+    "eu_ai_act_art31"
+  ],
+  "eu_ai_act_art34": [
+    "eu_ai_act_art43_p1",
+    "eu_ai_act_art28"
+  ],
+  "eu_ai_act_art35": [],
+  "eu_ai_act_art36_p1": [
+    "eu_ai_act_art30",
+    "eu_ai_act_art31"
+  ],
+  "eu_ai_act_art36_p2": [],
+  "eu_ai_act_art37": [
+    "eu_ai_act_art31",
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art38": [],
+  "eu_ai_act_art39": [
+    "eu_ai_act_art31"
+  ],
+  "eu_ai_act_art3_p1": [],
+  "eu_ai_act_art3_p2": [
+    "eu_ai_act_art2_p1",
+    "eu_ai_act_art9",
+    "eu_ai_act_art10"
+  ],
+  "eu_ai_act_art3_p3": [
+    "eu_ai_act_art4",
+    "eu_ai_act_art57_p1"
+  ],
+  "eu_ai_act_art3_p4": [
+    "eu_ai_act_art2_p1"
+  ],
+  "eu_ai_act_art4": [],
+  "eu_ai_act_art40": [
+    "eu_ai_act_art10",
+    "eu_ai_act_art24"
+  ],
+  "eu_ai_act_art41": [
+    "eu_ai_act_art10",
+    "eu_ai_act_art67",
+    "eu_ai_act_art22"
+  ],
+  "eu_ai_act_art42": [
+    "eu_ai_act_art10",
+    "eu_ai_act_art15"
+  ],
+  "eu_ai_act_art43_p1": [
+    "eu_ai_act_art40",
+    "eu_ai_act_art41",
+    "eu_ai_act_art74_p1",
+    "eu_ai_act_art31",
+    "eu_ai_act_art97"
+  ],
+  "eu_ai_act_art43_p2": [
+    "eu_ai_act_art97"
+  ],
+  "eu_ai_act_art44": [],
+  "eu_ai_act_art45": [
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art46": [
+    "eu_ai_act_art43_p1"
+  ],
+  "eu_ai_act_art47": [
+    "eu_ai_act_art97"
+  ],
+  "eu_ai_act_art48": [
+    "eu_ai_act_art30",
+    "eu_ai_act_art43_p1"
+  ],
+  "eu_ai_act_art49": [
+    "eu_ai_act_art71",
+    "eu_ai_act_art6",
+    "eu_ai_act_art74_p1"
+  ],
+  "eu_ai_act_art50": [
+    "eu_ai_act_art56"
+  ],
+  "eu_ai_act_art51": [
+    "eu_ai_act_art97"
+  ],
+  "eu_ai_act_art52": [
+    "eu_ai_act_art51",
+    "eu_ai_act_art90",
+    "eu_ai_act_art97"
+  ],
+  "eu_ai_act_art53": [
+    "eu_ai_act_art4",
+    "eu_ai_act_art56",
+    "eu_ai_act_art97",
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art54": [
+    "eu_ai_act_art53",
+    "eu_ai_act_art55"
+  ],
+  "eu_ai_act_art55": [
+    "eu_ai_act_art56",
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art56": [
+    "eu_ai_act_art53"
+  ],
+  "eu_ai_act_art57_p1": [
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art57_p2": [
+    "eu_ai_act_art62"
+  ],
+  "eu_ai_act_art58": [
+    "eu_ai_act_art95"
+  ],
+  "eu_ai_act_art59": [
+    "eu_ai_act_art35",
+    "eu_ai_act_art39"
+  ],
+  "eu_ai_act_art5_p1": [
+    "eu_ai_act_art9"
+  ],
+  "eu_ai_act_art5_p2": [
+    "eu_ai_act_art27",
+    "eu_ai_act_art49"
+  ],
+  "eu_ai_act_art5_p3": [],
+  "eu_ai_act_art6": [
+    "eu_ai_act_art49",
+    "eu_ai_act_art96",
+    "eu_ai_act_art97",
+    "eu_ai_act_art7"
+  ],
+  "eu_ai_act_art60_p1": [
+    "eu_ai_act_art5_p1",
+    "eu_ai_act_art71",
+    "eu_ai_act_art49"
+  ],
+  "eu_ai_act_art60_p2": [
+    "eu_ai_act_art13",
+    "eu_ai_act_art61",
+    "eu_ai_act_art75",
+    "eu_ai_act_art73"
+  ],
+  "eu_ai_act_art61": [
+    "eu_ai_act_art60_p1"
+  ],
+  "eu_ai_act_art62": [
+    "eu_ai_act_art43_p1"
+  ],
+  "eu_ai_act_art63": [
+    "eu_ai_act_art17"
+  ],
+  "eu_ai_act_art65": [
+    "eu_ai_act_art66",
+    "eu_ai_act_art30",
+    "eu_ai_act_art67"
+  ],
+  "eu_ai_act_art66": [
+    "eu_ai_act_art74_p1",
+    "eu_ai_act_art46",
+    "eu_ai_act_art112_p1",
+    "eu_ai_act_art73",
+    "eu_ai_act_art71",
+    "eu_ai_act_art7",
+    "eu_ai_act_art5_p1"
+  ],
+  "eu_ai_act_art67": [],
+  "eu_ai_act_art68": [
+    "eu_ai_act_art90",
+    "eu_ai_act_art74_p1",
+    "eu_ai_act_art81"
+  ],
+  "eu_ai_act_art69": [
+    "eu_ai_act_art68",
+    "eu_ai_act_art84"
+  ],
+  "eu_ai_act_art7": [
+    "eu_ai_act_art97"
+  ],
+  "eu_ai_act_art70": [
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art71": [
+    "eu_ai_act_art6",
+    "eu_ai_act_art49",
+    "eu_ai_act_art60_p1"
+  ],
+  "eu_ai_act_art72": [],
+  "eu_ai_act_art73": [
+    "eu_ai_act_art3_p1",
+    "eu_ai_act_art77",
+    "eu_ai_act_art19",
+    "eu_ai_act_art20"
+  ],
+  "eu_ai_act_art74_p1": [
+    "eu_ai_act_art2_p1",
+    "eu_ai_act_art34",
+    "eu_ai_act_art14"
+  ],
+  "eu_ai_act_art74_p2": [
+    "eu_ai_act_art9",
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art75": [
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art76": [
+    "eu_ai_act_art58",
+    "eu_ai_act_art60_p1"
+  ],
+  "eu_ai_act_art77": [
+    "eu_ai_act_art78"
+  ],
+  "eu_ai_act_art78": [
+    "eu_ai_act_art5_p1",
+    "eu_ai_act_art74_p1"
+  ],
+  "eu_ai_act_art79_p1": [
+    "eu_ai_act_art3_p1",
+    "eu_ai_act_art77",
+    "eu_ai_act_art18",
+    "eu_ai_act_art5_p1",
+    "eu_ai_act_art50"
+  ],
+  "eu_ai_act_art79_p2": [
+    "eu_ai_act_art18",
+    "eu_ai_act_art5_p1"
+  ],
+  "eu_ai_act_art8": [
+    "eu_ai_act_art9"
+  ],
+  "eu_ai_act_art80": [
+    "eu_ai_act_art6",
+    "eu_ai_act_art99_p1",
+    "eu_ai_act_art79_p1",
+    "eu_ai_act_art11",
+    "eu_ai_act_art71"
+  ],
+  "eu_ai_act_art81": [
+    "eu_ai_act_art79_p1",
+    "eu_ai_act_art5_p1",
+    "eu_ai_act_art11"
+  ],
+  "eu_ai_act_art82": [
+    "eu_ai_act_art79_p1",
+    "eu_ai_act_art77"
+  ],
+  "eu_ai_act_art83": [
+    "eu_ai_act_art48",
+    "eu_ai_act_art47",
+    "eu_ai_act_art71"
+  ],
+  "eu_ai_act_art84": [
+    "eu_ai_act_art21"
+  ],
+  "eu_ai_act_art85": [],
+  "eu_ai_act_art86": [],
+  "eu_ai_act_art88": [
+    "eu_ai_act_art75"
+  ],
+  "eu_ai_act_art9": [
+    "eu_ai_act_art72",
+    "eu_ai_act_art13",
+    "eu_ai_act_art60_p1"
+  ],
+  "eu_ai_act_art90": [
+    "eu_ai_act_art51"
+  ],
+  "eu_ai_act_art91": [
+    "eu_ai_act_art68",
+    "eu_ai_act_art101"
+  ],
+  "eu_ai_act_art92": [
+    "eu_ai_act_art91",
+    "eu_ai_act_art90",
+    "eu_ai_act_art68",
+    "eu_ai_act_art101"
+  ],
+  "eu_ai_act_art93": [
+    "eu_ai_act_art92",
+    "eu_ai_act_art18"
+  ],
+  "eu_ai_act_art95": [],
+  "eu_ai_act_art96": [
+    "eu_ai_act_art25",
+    "eu_ai_act_art5_p1",
+    "eu_ai_act_art50",
+    "eu_ai_act_art3_p1"
+  ],
+  "eu_ai_act_art97": [
+    "eu_ai_act_art6",
+    "eu_ai_act_art7",
+    "eu_ai_act_art11",
+    "eu_ai_act_art43_p1",
+    "eu_ai_act_art47",
+    "eu_ai_act_art51",
+    "eu_ai_act_art52",
+    "eu_ai_act_art53",
+    "eu_ai_act_art5_p1"
+  ],
+  "eu_ai_act_art99_p1": [
+    "eu_ai_act_art96",
+    "eu_ai_act_art5_p1",
+    "eu_ai_act_art16",
+    "eu_ai_act_art22",
+    "eu_ai_act_art23",
+    "eu_ai_act_art24",
+    "eu_ai_act_art26_p1",
+    "eu_ai_act_art31",
+    "eu_ai_act_art33",
+    "eu_ai_act_art34",
+    "eu_ai_act_art50"
+  ],
+  "eu_ai_act_art99_p2": [],
+  "gdpr_art1": [],
+  "gdpr_art10": [
+    "gdpr_art6"
+  ],
+  "gdpr_art11": [],
+  "gdpr_art12": [
+    "gdpr_art11",
+    "gdpr_art92"
+  ],
+  "gdpr_art13": [
+    "gdpr_art6",
+    "gdpr_art46",
+    "gdpr_art49",
+    "gdpr_art9",
+    "gdpr_art22"
+  ],
+  "gdpr_art14": [
+    "gdpr_art46",
+    "gdpr_art49",
+    "gdpr_art6",
+    "gdpr_art9",
+    "gdpr_art22",
+    "gdpr_art89"
+  ],
+  "gdpr_art15": [
+    "gdpr_art22",
+    "gdpr_art46"
+  ],
+  "gdpr_art16": [],
+  "gdpr_art17": [
+    "gdpr_art6",
+    "gdpr_art9",
+    "gdpr_art21",
+    "gdpr_art8",
+    "gdpr_art89"
+  ],
+  "gdpr_art18": [
+    "gdpr_art21"
+  ],
+  "gdpr_art19": [
+    "gdpr_art16",
+    "gdpr_art17",
+    "gdpr_art18"
+  ],
+  "gdpr_art2": [
+    "gdpr_art98"
+  ],
+  "gdpr_art20": [
+    "gdpr_art6",
+    "gdpr_art9",
+    "gdpr_art17"
+  ],
+  "gdpr_art21": [
+    "gdpr_art6",
+    "gdpr_art89"
+  ],
+  "gdpr_art22": [
+    "gdpr_art9"
+  ],
+  "gdpr_art23": [
+    "gdpr_art34",
+    "gdpr_art5"
+  ],
+  "gdpr_art24": [
+    "gdpr_art40",
+    "gdpr_art42"
+  ],
+  "gdpr_art25": [
+    "gdpr_art42"
+  ],
+  "gdpr_art26": [],
+  "gdpr_art27": [
+    "gdpr_art3",
+    "gdpr_art9",
+    "gdpr_art10"
+  ],
+  "gdpr_art28_p1": [
+    "gdpr_art32",
+    "gdpr_art40",
+    "gdpr_art42",
+    "gdpr_art93"
+  ],
+  "gdpr_art28_p2": [],
+  "gdpr_art3": [],
+  "gdpr_art30": [
+    "gdpr_art49",
+    "gdpr_art32",
+    "gdpr_art9",
+    "gdpr_art10"
+  ],
+  "gdpr_art32": [
+    "gdpr_art40",
+    "gdpr_art42"
+  ],
+  "gdpr_art33": [
+    "gdpr_art55"
+  ],
+  "gdpr_art34": [
+    "gdpr_art33"
+  ],
+  "gdpr_art35": [
+    "gdpr_art9",
+    "gdpr_art10",
+    "gdpr_art68",
+    "gdpr_art40",
+    "gdpr_art6"
+  ],
+  "gdpr_art36": [
+    "gdpr_art35",
+    "gdpr_art58"
+  ],
+  "gdpr_art37": [
+    "gdpr_art9",
+    "gdpr_art10",
+    "gdpr_art39"
+  ],
+  "gdpr_art38": [
+    "gdpr_art39"
+  ],
+  "gdpr_art39": [
+    "gdpr_art35",
+    "gdpr_art36"
+  ],
+  "gdpr_art40": [
+    "gdpr_art32",
+    "gdpr_art3",
+    "gdpr_art46",
+    "gdpr_art41",
+    "gdpr_art55",
+    "gdpr_art93"
+  ],
+  "gdpr_art41": [
+    "gdpr_art40"
+  ],
+  "gdpr_art42": [
+    "gdpr_art3",
+    "gdpr_art46",
+    "gdpr_art55",
+    "gdpr_art43",
+    "gdpr_art58"
+  ],
+  "gdpr_art43": [
+    "gdpr_art58",
+    "gdpr_art55",
+    "gdpr_art42",
+    "gdpr_art92",
+    "gdpr_art93"
+  ],
+  "gdpr_art44": [],
+  "gdpr_art45": [
+    "gdpr_art93",
+    "gdpr_art25"
+  ],
+  "gdpr_art46": [
+    "gdpr_art45",
+    "gdpr_art47",
+    "gdpr_art93",
+    "gdpr_art40",
+    "gdpr_art42",
+    "gdpr_art26"
+  ],
+  "gdpr_art47": [
+    "gdpr_art22",
+    "gdpr_art79",
+    "gdpr_art37",
+    "gdpr_art93"
+  ],
+  "gdpr_art48": [],
+  "gdpr_art49": [
+    "gdpr_art45",
+    "gdpr_art46",
+    "gdpr_art30"
+  ],
+  "gdpr_art4_p1": [],
+  "gdpr_art4_p2": [
+    "gdpr_art27",
+    "gdpr_art51",
+    "gdpr_art1"
+  ],
+  "gdpr_art5": [
+    "gdpr_art89"
+  ],
+  "gdpr_art50": [],
+  "gdpr_art51": [],
+  "gdpr_art52": [],
+  "gdpr_art53": [],
+  "gdpr_art54": [],
+  "gdpr_art55": [
+    "gdpr_art6",
+    "gdpr_art56"
+  ],
+  "gdpr_art56": [
+    "gdpr_art55",
+    "gdpr_art60"
+  ],
+  "gdpr_art57": [
+    "gdpr_art80",
+    "gdpr_art28_p1",
+    "gdpr_art46",
+    "gdpr_art35",
+    "gdpr_art36",
+    "gdpr_art40",
+    "gdpr_art42",
+    "gdpr_art41",
+    "gdpr_art43",
+    "gdpr_art47",
+    "gdpr_art58"
+  ],
+  "gdpr_art58": [
+    "gdpr_art42",
+    "gdpr_art17",
+    "gdpr_art19",
+    "gdpr_art83_p1",
+    "gdpr_art36",
+    "gdpr_art40",
+    "gdpr_art43",
+    "gdpr_art28_p1",
+    "gdpr_art46",
+    "gdpr_art47"
+  ],
+  "gdpr_art59": [
+    "gdpr_art58"
+  ],
+  "gdpr_art6": [
+    "gdpr_art23",
+    "gdpr_art9",
+    "gdpr_art10"
+  ],
+  "gdpr_art60": [
+    "gdpr_art61",
+    "gdpr_art62",
+    "gdpr_art66"
+  ],
+  "gdpr_art61": [
+    "gdpr_art55",
+    "gdpr_art66",
+    "gdpr_art93"
+  ],
+  "gdpr_art62": [
+    "gdpr_art56",
+    "gdpr_art55",
+    "gdpr_art66"
+  ],
+  "gdpr_art64": [
+    "gdpr_art35",
+    "gdpr_art40",
+    "gdpr_art41",
+    "gdpr_art43",
+    "gdpr_art42",
+    "gdpr_art46",
+    "gdpr_art28_p1",
+    "gdpr_art47",
+    "gdpr_art61",
+    "gdpr_art62",
+    "gdpr_art65"
+  ],
+  "gdpr_art65": [
+    "gdpr_art60",
+    "gdpr_art64"
+  ],
+  "gdpr_art66": [
+    "gdpr_art60",
+    "gdpr_art64",
+    "gdpr_art65"
+  ],
+  "gdpr_art67": [
+    "gdpr_art64",
+    "gdpr_art93"
+  ],
+  "gdpr_art68": [
+    "gdpr_art65"
+  ],
+  "gdpr_art69": [
+    "gdpr_art70_p1"
+  ],
+  "gdpr_art7": [],
+  "gdpr_art70_p1": [
+    "gdpr_art17",
+    "gdpr_art22",
+    "gdpr_art33",
+    "gdpr_art34",
+    "gdpr_art47",
+    "gdpr_art49",
+    "gdpr_art58",
+    "gdpr_art83_p1",
+    "gdpr_art54",
+    "gdpr_art42",
+    "gdpr_art43",
+    "gdpr_art12",
+    "gdpr_art64",
+    "gdpr_art65",
+    "gdpr_art66"
+  ],
+  "gdpr_art70_p2": [
+    "gdpr_art40",
+    "gdpr_art93",
+    "gdpr_art76"
+  ],
+  "gdpr_art71": [
+    "gdpr_art70_p1",
+    "gdpr_art65"
+  ],
+  "gdpr_art74": [
+    "gdpr_art65"
+  ],
+  "gdpr_art75": [],
+  "gdpr_art76": [],
+  "gdpr_art77": [
+    "gdpr_art78"
+  ],
+  "gdpr_art78": [
+    "gdpr_art77"
+  ],
+  "gdpr_art79": [
+    "gdpr_art77"
+  ],
+  "gdpr_art8": [
+    "gdpr_art6"
+  ],
+  "gdpr_art80": [
+    "gdpr_art82",
+    "gdpr_art77"
+  ],
+  "gdpr_art81": [],
+  "gdpr_art82": [
+    "gdpr_art79"
+  ],
+  "gdpr_art83_p1": [
+    "gdpr_art58",
+    "gdpr_art40",
+    "gdpr_art42",
+    "gdpr_art41"
+  ],
+  "gdpr_art83_p2": [],
+  "gdpr_art84": [
+    "gdpr_art83_p1"
+  ],
+  "gdpr_art85": [],
+  "gdpr_art86": [],
+  "gdpr_art87": [],
+  "gdpr_art88": [],
+  "gdpr_art89": [],
+  "gdpr_art9": [
+    "gdpr_art89"
+  ],
+  "gdpr_art90": [
+    "gdpr_art58"
+  ],
+  "gdpr_art91": [],
+  "gdpr_art92": [
+    "gdpr_art12",
+    "gdpr_art43"
+  ],
+  "gdpr_art93": [
+    "gdpr_art5",
+    "gdpr_art8"
+  ],
+  "gdpr_art94": [],
+  "gdpr_art95": [],
+  "gdpr_art97": [
+    "gdpr_art45",
+    "gdpr_art25"
+  ],
+  "gdpr_art98": [],
+  "pipl_art10": [],
+  "pipl_art11": [],
+  "pipl_art12": [],
+  "pipl_art13": [],
+  "pipl_art14": [],
+  "pipl_art15": [],
+  "pipl_art16": [],
+  "pipl_art17": [],
+  "pipl_art18": [],
+  "pipl_art2": [],
+  "pipl_art20": [],
+  "pipl_art21": [],
+  "pipl_art22": [],
+  "pipl_art23": [],
+  "pipl_art24": [],
+  "pipl_art26": [],
+  "pipl_art27": [],
+  "pipl_art28": [],
+  "pipl_art3": [],
+  "pipl_art30": [
+    "pipl_art17"
+  ],
+  "pipl_art31": [],
+  "pipl_art32": [],
+  "pipl_art34": [],
+  "pipl_art35": [
+    "pipl_art18"
+  ],
+  "pipl_art36": [],
+  "pipl_art37": [],
+  "pipl_art38": [
+    "pipl_art40"
+  ],
+  "pipl_art39": [],
+  "pipl_art4": [],
+  "pipl_art40": [],
+  "pipl_art41": [],
+  "pipl_art42": [],
+  "pipl_art43": [],
+  "pipl_art44": [],
+  "pipl_art45": [
+    "pipl_art18",
+    "pipl_art35"
+  ],
+  "pipl_art46": [],
+  "pipl_art47": [],
+  "pipl_art49": [],
+  "pipl_art50": [],
+  "pipl_art51": [],
+  "pipl_art52": [],
+  "pipl_art53": [
+    "pipl_art3"
+  ],
+  "pipl_art55": [],
+  "pipl_art56": [],
+  "pipl_art57": [],
+  "pipl_art58": [],
+  "pipl_art59": [],
+  "pipl_art6": [],
+  "pipl_art60": [],
+  "pipl_art61": [],
+  "pipl_art62": [],
+  "pipl_art63": [],
+  "pipl_art64": [],
+  "pipl_art65": [],
+  "pipl_art66": [],
+  "pipl_art68": [],
+  "pipl_art69": [],
+  "pipl_art70": [],
+  "pipl_art72": [],
+  "pipl_art73": []
+}

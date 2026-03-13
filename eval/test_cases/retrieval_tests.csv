@@ -1,0 +1,21 @@
+query,expected_regulation,expected_article_id,jurisdiction
+欧洲用户视频跨境传输需要什么保障,GDPR,Article 46,EU
+把欧盟个人数据传到第三国训练模型,GDPR,Article 46,EU
+中国个人信息出境要满足哪些条件,PIPL,第三十八条,CN
+国内平台把用户数据发往境外云服务商,PIPL,第三十九条,CN
+欧盟场景下基于用户同意处理数据,GDPR,Article 6,EU
+撤回同意后个人数据处理怎么办,GDPR,Article 7,EU
+中国 App 收集个人信息时如何取得同意,PIPL,第十三条,CN
+处理个人信息前要告知哪些事项并征得同意,PIPL,第十四条,CN
+人工智能生成内容需要向用户做透明提示吗,EU AI Act,Article 50,EU
+聊天机器人和深度伪造输出要不要明确标识,EU AI Act,Article 50,EU
+人工智能生成合成内容要怎么加显式标识,AIGC Marking Measures,第四条,CN
+用户发布 AI 合成内容时要不要主动声明,AIGC Marking Measures,第十条,CN
+欧洲人脸识别和生物特征数据能否直接处理,GDPR,Article 9,EU
+欧盟对 biometric data 的处理限制是什么,GDPR,Article 9,EU
+中国平台处理人脸信息属于什么类型的个人信息,PIPL,第二十八条,CN
+处理生物特征等敏感个人信息需要满足什么条件,PIPL,第二十九条,CN
+接入第三方模型供应商时控制者和处理者责任怎么分,GDPR,Article 28,EU
+把欧盟用户数据交给外部处理商时合同要约定什么,GDPR,Article 28,EU
+向第三方提供个人信息前要履行哪些义务,PIPL,第二十三条,CN
+委托第三方处理个人信息时处理者要满足什么要求,PIPL,第二十一条,CN
