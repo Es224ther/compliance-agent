@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from config.llm import get_async_client
 from config.settings import get_settings
 
 
@@ -15,7 +16,7 @@ SYSTEM_PROMPT = """
 不要使用"本条款"开头，直接描述内容。
 """.strip()
 
-DEFAULT_SUMMARY_MODEL = "claude-3-haiku-20240307"
+DEFAULT_SUMMARY_MODEL = "claude-sonnet-4-20250514"
 DEFAULT_CACHE_PATH = Path("data/kb/summary_cache.json")
 
 
@@ -52,9 +53,7 @@ async def augment_summaries_async(
 
     pending = [chunk for chunk in chunks if chunk.get("chunk_id") and chunk["chunk_id"] not in cache]
     if pending:
-        AsyncAnthropic = _get_async_anthropic_class()
-        settings = get_settings()
-        client = AsyncAnthropic(api_key=settings.api_key)
+        client = get_async_client()
         semaphore = asyncio.Semaphore(safe_concurrency)
 
         async def worker(chunk: dict[str, Any]) -> None:
@@ -86,9 +85,9 @@ async def _generate_summary(
     payload = _build_user_payload(chunk)
     response = await client.messages.create(
         model=model_name,
+        system=SYSTEM_PROMPT,
         max_tokens=220,
         temperature=0.1,
-        system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": payload}],
     )
     return _read_text_response(response).strip()
@@ -112,11 +111,11 @@ def _build_user_payload(chunk: dict[str, Any]) -> str:
 
 
 def _read_text_response(response: Any) -> str:
-    parts: list[str] = []
-    for block in getattr(response, "content", []) or []:
-        if getattr(block, "type", "") == "text":
-            parts.append(getattr(block, "text", ""))
-    return "".join(parts)
+    for block in getattr(response, "content", []):
+        text = getattr(block, "text", None)
+        if text:
+            return text
+    return ""
 
 
 def _load_cache(cache_file: Path) -> dict[str, str]:
@@ -147,13 +146,3 @@ def _resolve_model_name(model_name: str | None) -> str:
         return configured.strip()
     return DEFAULT_SUMMARY_MODEL
 
-
-def _get_async_anthropic_class() -> Any:
-    try:
-        from anthropic import AsyncAnthropic
-    except ModuleNotFoundError as exc:
-        raise RuntimeError(
-            "anthropic package is required for summary generation. "
-            "Install dependencies or run in the project virtualenv."
-        ) from exc
-    return AsyncAnthropic

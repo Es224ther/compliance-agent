@@ -31,6 +31,7 @@ class SharedState(BaseModel):
     model_config = ConfigDict(strict=False)
 
     session_id: str | None = None
+    report_id: str | None = None
     raw_input: ScenarioInput | None = None
     status: PipelineStatus = PipelineStatus.CREATED
     parsed_fields: ParsedFields = Field(default_factory=ParsedFields)

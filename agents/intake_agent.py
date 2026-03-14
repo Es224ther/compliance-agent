@@ -64,7 +64,7 @@ class IntakeAgent(ReActAgent):
         )
 
     def act(self, thought: str, tools: list[dict[str, Any]]) -> ToolResult:
-        """Call Claude with tool forcing and capture the tool input."""
+        """Call Claude with forced tool use and capture the tool input."""
 
         response = self.client.messages.create(
             model=self.settings.model_name or DEFAULT_MODEL_NAME,
@@ -74,8 +74,8 @@ class IntakeAgent(ReActAgent):
             tools=tools,
             tool_choice={"type": "tool", "name": "parse_scenario"},
         )
-
         tool_use = self._extract_tool_use(response)
+
         validated = validate_parse_scenario_output(tool_use["input"])
         shared_state = self._build_shared_state(validated)
 
@@ -155,25 +155,73 @@ class IntakeAgent(ReActAgent):
 
     @staticmethod
     def _build_parse_tool_schema() -> dict[str, Any]:
-        schema = ParsedFields.model_json_schema()
+        schema = IntakeAgent._parse_payload_json_schema()
+        schema["additionalProperties"] = False
+        schema["propertyOrdering"] = [
+            "region",
+            "data_types",
+            "cross_border",
+            "third_party_model",
+            "aigc_output",
+            "data_volume_level",
+        ]
         return {
             "name": "parse_scenario",
             "description": "Parse a compliance scenario into structured fields.",
-            "input_schema": {
-                "type": "object",
-                "properties": schema["properties"],
-                "required": [],
-                "additionalProperties": False,
-            },
+            "input_schema": schema,
         }
 
     @staticmethod
     def _extract_tool_use(response: Any) -> dict[str, Any]:
         for block in getattr(response, "content", []):
-            block_type = getattr(block, "type", None)
-            if block_type == "tool_use":
-                return {
-                    "name": getattr(block, "name", "parse_scenario"),
-                    "input": dict(getattr(block, "input", {}) or {}),
-                }
-        raise ValueError("Claude response did not include a parse_scenario tool call.")
+            if getattr(block, "type", None) != "tool_use":
+                continue
+            return {
+                "name": getattr(block, "name", "parse_scenario"),
+                "input": dict(getattr(block, "input", {}) or {}),
+            }
+
+        preview = repr(response).replace("\n", "\\n")
+        raise ValueError(
+            "Claude response did not include a parse_scenario tool call. "
+            f"Response preview: {preview[:240]}"
+        )
+
+    @staticmethod
+    def _parse_payload_json_schema() -> dict[str, Any]:
+        return {
+            "type": "object",
+            "properties": {
+                "region": {
+                    "type": ["string", "null"],
+                    "enum": ["EU", "CN", "Global", "EU+CN", None],
+                    "description": "Legal jurisdiction of the scenario",
+                },
+                "data_types": {
+                    "type": ["array", "null"],
+                    "items": {
+                        "type": "string",
+                        "enum": ["Personal", "Behavioral", "Biometric", "Financial"],
+                    },
+                    "description": "Categories of data being processed",
+                },
+                "cross_border": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether data crosses jurisdictional borders",
+                },
+                "third_party_model": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether a third-party model API is used",
+                },
+                "aigc_output": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the feature produces AI-generated content",
+                },
+                "data_volume_level": {
+                    "type": ["string", "null"],
+                    "enum": ["Small", "Medium", "Large", None],
+                    "description": "Volume of data processed",
+                },
+            },
+            "required": [],
+        }

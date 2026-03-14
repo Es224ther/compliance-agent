@@ -36,6 +36,9 @@ def test_intake_agent_loads_prompt_and_validates_tool_output(mock_llm_client) ->
         "type": "tool",
         "name": "parse_scenario",
     }
+    schema = client.messages.calls[0]["tools"][0]["input_schema"]
+    assert schema["additionalProperties"] is False
+    assert schema["propertyOrdering"][0] == "region"
 
 
 def test_intake_agent_generates_followup_when_required_fields_are_missing(
@@ -95,3 +98,32 @@ def test_intake_agent_stops_followup_after_two_rounds(mock_llm_client) -> None:
         "data_types",
         "cross_border",
     ]
+
+
+def test_extract_tool_use_reads_anthropic_tool_use_block() -> None:
+    from types import SimpleNamespace
+
+    response = SimpleNamespace(
+        content=[
+            SimpleNamespace(
+                type="tool_use",
+                name="parse_scenario",
+                input={
+                    "region": "EU",
+                    "data_types": ["Personal"],
+                    "cross_border": True,
+                },
+            )
+        ]
+    )
+
+    tool_use = IntakeAgent._extract_tool_use(response)
+
+    assert tool_use == {
+        "name": "parse_scenario",
+        "input": {
+            "region": "EU",
+            "data_types": ["Personal"],
+            "cross_border": True,
+        },
+    }

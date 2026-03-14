@@ -49,6 +49,8 @@ async def generate_report(
         "disclaimer": "",
         "reasoning": risk_assessment.reasoning,
     }
+    if state.report_id:
+        report_payload["report_id"] = state.report_id
 
     try:
         report = AuditReport.model_validate(report_payload)

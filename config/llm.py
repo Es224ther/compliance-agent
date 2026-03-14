@@ -2,7 +2,7 @@
 
 from functools import lru_cache
 
-from anthropic import Anthropic
+from anthropic import Anthropic, AsyncAnthropic
 
 from config.settings import get_settings
 
@@ -13,3 +13,11 @@ def get_client() -> Anthropic:
 
     settings = get_settings()
     return Anthropic(api_key=settings.api_key)
+
+
+@lru_cache(maxsize=1)
+def get_async_client() -> AsyncAnthropic:
+    """Return a cached async Anthropic client."""
+
+    settings = get_settings()
+    return AsyncAnthropic(api_key=settings.api_key)
