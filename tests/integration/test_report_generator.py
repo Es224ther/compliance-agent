@@ -1,11 +1,11 @@
 import asyncio
 
-from processors.report_generator import generate_report
-from schemas.evidence import EvidenceChunk
-from schemas.report import AuditReport
-from schemas.risk import EscalationResult, RemediationAction, RiskAssessment, RiskLevel
-from schemas.scenario import ParsedFields, ScenarioInput
-from schemas.state import SharedState
+from app.processors.report_generator import generate_report
+from app.schemas.evidence import EvidenceChunk
+from app.schemas.report import AuditReport
+from app.schemas.risk import EscalationResult, RemediationAction, RiskAssessment, RiskLevel
+from app.schemas.scenario import ParsedFields, ScenarioInput
+from app.schemas.state import SharedState
 
 
 def _scenario_a_state() -> tuple[SharedState, RiskAssessment, EscalationResult]:

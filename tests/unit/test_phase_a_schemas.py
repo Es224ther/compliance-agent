@@ -1,9 +1,9 @@
 from pydantic import ValidationError
 
-from schemas.evidence import EvidenceChunk
-from schemas.report import AuditReport
-from schemas.risk import EscalationResult, RemediationAction, RiskAssessment, RiskLevel
-from schemas.scenario import ParsedFields
+from app.schemas.evidence import EvidenceChunk
+from app.schemas.report import AuditReport
+from app.schemas.risk import EscalationResult, RemediationAction, RiskAssessment, RiskLevel
+from app.schemas.scenario import ParsedFields
 
 
 def _sample_evidence() -> list[EvidenceChunk]:

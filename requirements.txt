@@ -1,5 +1,6 @@
 openai
 pydantic
+pydantic-settings
 fastapi
 uvicorn
 chromadb

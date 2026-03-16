@@ -1,7 +1,7 @@
-from schemas.evidence import EvidenceChunk
-from schemas.risk import RiskLevel
-from schemas.scenario import ParsedFields
-from tools.risk_scorer import calculate_risk_level
+from app.schemas.evidence import EvidenceChunk
+from app.schemas.risk import RiskLevel
+from app.schemas.scenario import ParsedFields
+from app.tools.risk_scorer import calculate_risk_level
 
 
 def _chunk(

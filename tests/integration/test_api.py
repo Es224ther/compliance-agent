@@ -8,11 +8,11 @@ from app.api.middleware import reset_rate_limit_buckets
 from app.api import routes
 from app.api.store import store
 from app.main import app
-from schemas.evidence import EvidenceChunk
-from schemas.report import AuditReport
-from schemas.risk import EscalationResult, RemediationAction, RiskLevel
-from schemas.scenario import ParsedFields, ScenarioInput
-from schemas.state import PipelineStatus, SharedState
+from app.schemas.evidence import EvidenceChunk
+from app.schemas.report import AuditReport
+from app.schemas.risk import EscalationResult, RemediationAction, RiskLevel
+from app.schemas.scenario import ParsedFields, ScenarioInput
+from app.schemas.state import FollowUpQuestion, PipelineStatus, SharedState
 
 
 @pytest.fixture(autouse=True)
@@ -153,6 +153,90 @@ def test_websocket_progress_replay(monkeypatch):
 
         assert first["step"] == "pii_sanitization"
         assert second["step"] == "completed"
+
+
+def test_websocket_serializes_followup_question_model(monkeypatch):
+    async def stub_run_pipeline(scenario_input, on_progress=None, progress_callback=None, report_id=None):
+        assert progress_callback is not None
+        question = FollowUpQuestion(
+            field="region",
+            question="你的业务主要涉及哪个法域？",
+            options=["A. 仅 EU", "B. 仅 CN"],
+        )
+        await progress_callback(
+            {
+                "step": "followup",
+                "status": "waiting",
+                "message": "需要补充信息",
+                "data": {"questions": [question]},
+            }
+        )
+        return SharedState(
+            session_id=scenario_input.session_id,
+            report_id=report_id,
+            raw_input=ScenarioInput(raw_text="模糊场景", session_id=scenario_input.session_id),
+            status=PipelineStatus.AWAITING_FOLLOWUP,
+            followup_questions=[question],
+            missing_fields=["region"],
+        )
+
+    monkeypatch.setattr(routes, "run_pipeline", stub_run_pipeline)
+
+    with TestClient(app) as client:
+        analyze = client.post("/api/v1/analyze", json={"scenario_text": "模糊测试文本，长度超过二十字。"}).json()
+        time.sleep(0.05)
+        with client.websocket_connect(f"/ws/{analyze['session_id']}") as websocket:
+            event = websocket.receive_json()
+
+    assert event["step"] == "followup"
+    assert event["status"] == "waiting"
+    assert event["data"]["questions"][0]["field"] == "region"
+
+
+def test_websocket_accepts_followup_answers_alias(monkeypatch):
+    from app.api import websocket as websocket_module
+
+    session_id = "session-followup"
+    report_id = "report-followup"
+    state = SharedState(
+        session_id=session_id,
+        report_id=report_id,
+        raw_input=ScenarioInput(raw_text="这是一个模糊描述，没有法域和数据类型。", session_id=session_id),
+        status=PipelineStatus.AWAITING_FOLLOWUP,
+        followup_questions=[
+            {
+                "field": "region",
+                "question": "你的业务主要涉及哪个法域？",
+                "options": ["A. 仅 EU", "B. 仅 CN"],
+            }
+        ],
+        missing_fields=["region", "data_types", "cross_border"],
+    )
+    asyncio.run(store.create_session(session_id, report_id, "这是一个模糊描述，没有法域和数据类型。"))
+    asyncio.run(store.set_session_state(session_id, state, state.status.value.lower()))
+
+    async def stub_resume_pipeline(state, user_followup, on_progress=None, progress_callback=None):
+        completed = _completed_state(session_id, report_id)
+        if progress_callback is not None:
+            await progress_callback(
+                {"step": "completed", "status": "completed", "message": "报告生成完成", "data": {"report_id": report_id}}
+            )
+        return completed
+
+    monkeypatch.setattr(websocket_module, "resume_pipeline", stub_resume_pipeline)
+
+    with TestClient(app) as client:
+        with client.websocket_connect(f"/ws/{session_id}") as websocket:
+            websocket.send_json(
+                {
+                    "type": "followup_answers",
+                    "answers": {"region": "A. 仅 EU", "data_types": "A. Personal", "cross_border": "B. 否"},
+                }
+            )
+            event = websocket.receive_json()
+
+    assert event["step"] == "completed"
+    assert event["status"] == "completed"
 
 
 def test_get_evidence_full_text():

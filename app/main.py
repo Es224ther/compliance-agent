@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from app.api.middleware import add_api_middleware
 from app.api.routes import router as api_router
 from app.api.websocket import websocket_router
-from rag.kb.vector_store import get_default_store
+from app.rag.kb.vector_store import get_default_store
 
 
 @asynccontextmanager

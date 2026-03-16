@@ -1,14 +1,14 @@
 import asyncio
 
-from agents.base import AgentOutput
-from agents.intake_agent import IntakeResult
-from orchestrator.pipeline import run_pipeline
-from orchestrator import pipeline as pipeline_module
-from schemas.report import AuditReport
-from schemas.risk import RiskLevel
-from schemas.scenario import ParsedFields, ScenarioInput
-from schemas.state import SharedState
-from schemas.state import PipelineStatus
+from app.agents.base import AgentOutput
+from app.agents.intake_agent import IntakeResult
+from app.orchestrator.pipeline import run_pipeline
+from app.orchestrator import pipeline as pipeline_module
+from app.schemas.report import AuditReport
+from app.schemas.risk import RiskLevel
+from app.schemas.scenario import ParsedFields, ScenarioInput
+from app.schemas.state import SharedState
+from app.schemas.state import PipelineStatus
 
 SCENARIO_A_INPUT = ScenarioInput(
     raw_text="我们在 EU+CN 处理人脸数据并跨境训练第三方模型，输出 AIGC 内容。",
@@ -40,6 +40,8 @@ def test_pipeline_awaiting_followup(mock_llm):
     state = asyncio.run(run_pipeline(VAGUE_INPUT))
     assert state.status == PipelineStatus.AWAITING_FOLLOWUP
     assert state.followup_questions is not None
+    assert state.followup_questions[0].field == "region"
+    assert state.followup_questions[0].options[0].startswith("A.")
 
 
 def test_report_schema_contract(mock_llm, mock_rag):
@@ -47,6 +49,19 @@ def test_report_schema_contract(mock_llm, mock_rag):
     assert state.report is not None
     report_json = state.report.to_json()
     AuditReport.model_validate(report_json)
+
+
+def test_pipeline_emits_completed_events_for_risk_and_report(mock_llm, mock_rag):
+    events: list[dict[str, str]] = []
+
+    async def _capture(event: dict[str, str]) -> None:
+        events.append(event)
+
+    state = asyncio.run(run_pipeline(SCENARIO_B_INPUT, progress_callback=_capture))
+
+    assert state.status == PipelineStatus.COMPLETED
+    assert any(e.get("step") == "risk_analysis" and e.get("status") == "completed" for e in events)
+    assert any(e.get("step") == "report_generation" and e.get("status") == "completed" for e in events)
 
 
 def test_escalation_priority(mock_llm, mock_rag_critical):

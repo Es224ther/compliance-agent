@@ -84,7 +84,7 @@ function SectionCard({
   );
 }
 
-function SectionIcon({ d, color = "#818cf8" }: { d: string; color?: string }) {
+function SectionIcon({ d, color = "#a1a1aa" }: { d: string; color?: string }) {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d={d} />
@@ -163,7 +163,7 @@ export default function ReportViewer({ report }: ReportViewerProps) {
                 <div className="flex items-center gap-2 mb-2">
                   <span
                     className="w-6 h-6 rounded-md flex items-center justify-center"
-                    style={{ background: "rgba(99,102,241,0.12)", border: "1px solid rgba(99,102,241,0.2)", color: "#818cf8" }}
+                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.12)", color: "#a1a1aa" }}
                     aria-hidden="true"
                   >
                     {meta.icon}

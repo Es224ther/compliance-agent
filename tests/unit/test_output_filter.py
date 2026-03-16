@@ -1,9 +1,9 @@
-from guards.legal_disclaimer import inject_disclaimer
-from schemas.evidence import EvidenceChunk
-from schemas.report import AuditReport
-from schemas.risk import RemediationAction, RiskLevel
-from schemas.scenario import ParsedFields
-from tools.output_filter import filter_report_fields
+from app.guards.legal_disclaimer import inject_disclaimer
+from app.schemas.evidence import EvidenceChunk
+from app.schemas.report import AuditReport
+from app.schemas.risk import RemediationAction, RiskLevel
+from app.schemas.scenario import ParsedFields
+from app.tools.output_filter import filter_report_fields
 
 
 def _report_with_hard_tone() -> AuditReport:

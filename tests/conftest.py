@@ -3,13 +3,13 @@ import json
 
 import pytest
 
-from agents.base import AgentOutput
-from agents.intake_agent import IntakeResult
-from agents.risk_agent import RiskAgent
-from schemas.evidence import EvidenceChunk
-from schemas.risk import RemediationAction, RiskAssessment, RiskLevel
-from schemas.scenario import ParsedFields, ScenarioInput
-from schemas.state import SharedState
+from app.agents.base import AgentOutput
+from app.agents.intake_agent import IntakeResult
+from app.agents.risk_agent import RiskAgent
+from app.schemas.evidence import EvidenceChunk
+from app.schemas.risk import RemediationAction, RiskAssessment, RiskLevel
+from app.schemas.scenario import ParsedFields, ScenarioInput
+from app.schemas.state import SharedState
 
 class StubChatCompletionsAPI:
     def __init__(self, response: object | None = None) -> None:
@@ -46,7 +46,7 @@ def mock_llm_client(monkeypatch):
         )
         return client
 
-    monkeypatch.setattr("agents.intake_agent.get_client", lambda: client)
+    monkeypatch.setattr("app.agents.intake_agent.get_client", lambda: client)
     return _set_response
 
 
@@ -160,7 +160,7 @@ def _chunk(
 
 @pytest.fixture
 def mock_llm(monkeypatch):
-    from orchestrator import pipeline as pipeline_module
+    from app.orchestrator import pipeline as pipeline_module
 
     stub = _StubIntakeAgent()
     monkeypatch.setattr(pipeline_module, "_intake_agent_instance", stub)
@@ -170,7 +170,7 @@ def mock_llm(monkeypatch):
 
 @pytest.fixture
 def mock_llm_raises(monkeypatch):
-    from orchestrator import pipeline as pipeline_module
+    from app.orchestrator import pipeline as pipeline_module
 
     stub = _StubIntakeAgent(should_raise=True)
     monkeypatch.setattr(pipeline_module, "_intake_agent_instance", stub)
@@ -180,7 +180,7 @@ def mock_llm_raises(monkeypatch):
 
 @pytest.fixture
 def mock_rag(monkeypatch):
-    from orchestrator import pipeline as pipeline_module
+    from app.orchestrator import pipeline as pipeline_module
 
     def retriever(query: str, parsed_fields: ParsedFields) -> list[EvidenceChunk]:
         return [
@@ -218,7 +218,7 @@ def mock_rag(monkeypatch):
 
 @pytest.fixture
 def mock_rag_critical(monkeypatch):
-    from orchestrator import pipeline as pipeline_module
+    from app.orchestrator import pipeline as pipeline_module
 
     def retriever(query: str, parsed_fields: ParsedFields) -> list[EvidenceChunk]:
         return [
@@ -256,7 +256,7 @@ def mock_rag_critical(monkeypatch):
 
 @pytest.fixture
 def mock_rag_eu_only(monkeypatch):
-    from orchestrator import pipeline as pipeline_module
+    from app.orchestrator import pipeline as pipeline_module
 
     def retriever(query: str, parsed_fields: ParsedFields) -> list[EvidenceChunk]:
         return [

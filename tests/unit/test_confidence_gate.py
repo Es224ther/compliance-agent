@@ -1,6 +1,6 @@
-from guards.confidence_gate import evaluate_confidence
-from schemas.evidence import EvidenceChunk
-from schemas.scenario import ParsedFields
+from app.guards.confidence_gate import evaluate_confidence
+from app.schemas.evidence import EvidenceChunk
+from app.schemas.scenario import ParsedFields
 
 
 def _chunk(

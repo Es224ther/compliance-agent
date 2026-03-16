@@ -1,4 +1,4 @@
-from tools.schema_validator import validate_parse_scenario_output
+from app.tools.schema_validator import validate_parse_scenario_output
 
 
 def test_schema_validator_resets_invalid_fields_to_none() -> None:

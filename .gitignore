@@ -1,36 +1,64 @@
-# 1. 忽略虚拟环境
+# 1. 虚拟环境
 .venv/
 venv/
 env/
 
-# 2. 忽略环境变量
+# 2. 环境变量与密钥
 .env
-*.env
+.env.*
+!.env.example
 
-# 3. 忽略 Python 缓存
+# 3. Python 缓存
 __pycache__/
 *.py[cod]
 *$py.class
+*.egg-info/
+dist/
+build/
 
-# 4. 忽略 macOS 系统文件
+# 4. macOS 系统文件
 .DS_Store
+.AppleDouble
+.LSOverride
 
-# 5. 忽略 VS Code 本地编辑器配置
+# 5. IDE / 编辑器
 .vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
 
-# 6. 忽略测试缓存
+# 6. 测试缓存
 .pytest_cache/
+.coverage
+htmlcov/
 
-# 7. 忽略本地数据文件（法规文档、向量库等）
+# 7. 本地数据文件（法规文档、向量库等）
 data/regulations/
 data/chroma/
 data/*.db
 data/kb/vectors/
 data/kb/summary_cache.json
 
-# 8. 忽略评测输出
-eval/results.csv
+# 8. 评测输出
+eval/results*.csv
 
-# 9. 忽略本地任务文档
-task_03.md
-task_04.md
+# 9. 本地任务文档
+task_*.md
+
+# 10. Node.js（前端）
+frontend/node_modules/
+frontend/.next/
+
+# 11. 重构后已废弃的根目录后端包（已移入 app/）
+/agents/
+/guards/
+/orchestrator/
+/processors/
+/sanitizer/
+/tools/
+/observability/
+/rag/
+/schemas/
+/config/
+/prompts/

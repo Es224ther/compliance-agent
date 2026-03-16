@@ -7,9 +7,10 @@ from collections import defaultdict
 from typing import Any
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi.encoders import jsonable_encoder
 
 from app.api.store import store
-from orchestrator.pipeline import resume_pipeline
+from app.orchestrator.pipeline import resume_pipeline
 
 websocket_router = APIRouter()
 
@@ -31,13 +32,14 @@ class WebSocketSessionManager:
                 self._connections.pop(session_id, None)
 
     async def broadcast(self, session_id: str, event: dict[str, Any]) -> None:
-        await store.append_event(session_id, event)
+        encoded_event = jsonable_encoder(event)
+        await store.append_event(session_id, encoded_event)
         async with self._lock:
             targets = list(self._connections.get(session_id, set()))
         stale: list[WebSocket] = []
         for websocket in targets:
             try:
-                await websocket.send_json(event)
+                await websocket.send_json(encoded_event)
             except RuntimeError:
                 stale.append(websocket)
         for websocket in stale:
@@ -60,7 +62,7 @@ async def websocket_progress(websocket: WebSocket, session_id: str) -> None:
     try:
         while True:
             payload = await websocket.receive_json()
-            if payload.get("type") != "followup_response":
+            if payload.get("type") not in {"followup_response", "followup_answers"}:
                 continue
 
             state = await store.get_session_state(session_id)

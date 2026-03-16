@@ -9,7 +9,12 @@ interface CitationPanelProps {
 
 function CitationItem({ chunk, index }: { chunk: EvidenceChunk; index: number }) {
   const [open, setOpen] = useState(false);
-  const pct = Math.round(chunk.relevance_score * 100);
+  const score = Number(chunk.relevance_score ?? chunk.rerank_score ?? 0);
+  const safeScore = Number.isFinite(score) ? Math.max(0, Math.min(1, score)) : 0;
+  const pct = Math.round(safeScore * 100);
+  const articleLabel = chunk.article_id || chunk.article || "条款未标注";
+  const excerpt = chunk.text_excerpt || chunk.text || chunk.summary || "暂无摘录";
+  const chapter = chunk.chapter || "章节未标注";
 
   const scoreColor =
     pct >= 85 ? "#4ade80" : pct >= 70 ? "#facc15" : "#fb923c";
@@ -32,7 +37,7 @@ function CitationItem({ chunk, index }: { chunk: EvidenceChunk; index: number })
           height="14"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#818cf8"
+          stroke="#a1a1aa"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -52,19 +57,19 @@ function CitationItem({ chunk, index }: { chunk: EvidenceChunk; index: number })
             <span
               className="text-xs px-2 py-0.5 rounded"
               style={{
-                background: "rgba(99,102,241,0.15)",
-                color: "#818cf8",
-                border: "1px solid rgba(99,102,241,0.25)",
+                background: "rgba(255,255,255,0.03)",
+                color: "#d4d4d8",
+                border: "1px solid rgba(255,255,255,0.12)",
                 fontFamily: "monospace",
               }}
             >
-              {chunk.article_id}
+              {articleLabel}
             </span>
           </div>
 
           {/* Chapter */}
           <p className="text-xs mt-0.5 truncate" style={{ color: "#8a8f98" }}>
-            {chunk.chapter}
+            {chapter}
           </p>
 
           {/* Relevance bar */}
@@ -87,7 +92,7 @@ function CitationItem({ chunk, index }: { chunk: EvidenceChunk; index: number })
               className="text-xs tabular-nums shrink-0 font-medium"
               style={{ color: scoreColor }}
             >
-              {chunk.relevance_score.toFixed(2)}
+              {safeScore.toFixed(2)}
             </span>
           </div>
         </div>
@@ -111,7 +116,7 @@ function CitationItem({ chunk, index }: { chunk: EvidenceChunk; index: number })
             <p className="text-xs mb-2 font-medium" style={{ color: "#8a8f98" }}>
               原文摘录
             </p>
-            {chunk.text_excerpt}
+            {excerpt}
           </div>
         </div>
       )}
@@ -152,7 +157,7 @@ export default function CitationPanel({ citations }: CitationPanelProps) {
           height="14"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#818cf8"
+          stroke="#a1a1aa"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -169,7 +174,7 @@ export default function CitationPanel({ citations }: CitationPanelProps) {
       </div>
 
       {citations.map((c, i) => (
-        <CitationItem key={`${c.regulation}-${c.article_id}-${i}`} chunk={c} index={i} />
+        <CitationItem key={`${c.regulation}-${c.article_id || c.article || i}`} chunk={c} index={i} />
       ))}
     </div>
   );

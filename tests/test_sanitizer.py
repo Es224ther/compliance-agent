@@ -1,7 +1,7 @@
-from sanitizer.anonymizer import PIIAnonymizer
-from sanitizer.cn_id_card import is_valid_cn_id_card
-from sanitizer.engine import SanitizerEngine
-from sanitizer.pii_map import InMemoryPiiMap
+from app.sanitizer.anonymizer import PIIAnonymizer
+from app.sanitizer.cn_id_card import is_valid_cn_id_card
+from app.sanitizer.engine import SanitizerEngine
+from app.sanitizer.pii_map import InMemoryPiiMap
 
 
 def test_cn_id_card_checksum_validation() -> None:

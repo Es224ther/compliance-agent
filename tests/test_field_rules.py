@@ -1,7 +1,8 @@
 from app.schemas import ParsedFields
-from guards.field_rules import (
+from app.guards.field_rules import (
     REQUIRED_FIELDS,
     check_completeness,
+    generate_followup_questions,
     generate_followup_prompt,
     generate_uncertainties,
 )
@@ -26,6 +27,17 @@ def test_followup_prompt_uses_template_and_caps_at_three_questions() -> None:
     assert "2. 本次场景明确处理了哪些数据类型？" in prompt
     assert "3. 是否存在跨境传输或境外访问？" in prompt
     assert "第三方模型" not in prompt
+
+
+def test_generate_followup_questions_returns_structured_questions() -> None:
+    questions = generate_followup_questions(["region", "data_types", "cross_border", "aigc_output"])
+
+    assert len(questions) == 3
+    assert questions[0]["field"] == "region"
+    assert questions[0]["question"] == "你的业务主要涉及哪个法域？"
+    assert questions[0]["options"][0].startswith("A.")
+    assert questions[1]["field"] == "data_types"
+    assert questions[2]["field"] == "cross_border"
 
 
 def test_generate_uncertainties_from_null_fields_and_hedging_words() -> None:

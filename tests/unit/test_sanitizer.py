@@ -1,5 +1,5 @@
-from sanitizer.anonymizer import PIIAnonymizer
-from sanitizer.engine import SanitizerEngine
+from app.sanitizer.anonymizer import PIIAnonymizer
+from app.sanitizer.engine import SanitizerEngine
 
 
 def test_cn_phone_detection() -> None:

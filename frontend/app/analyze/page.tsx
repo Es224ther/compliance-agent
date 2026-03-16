@@ -10,6 +10,20 @@ import type { ProgressEvent, FollowUpQuestion } from "@/lib/types";
 
 type PageState = "idle" | "loading" | "follow_up" | "in_progress" | "done" | "error";
 
+function normalizeFollowUpQuestions(value: unknown): FollowUpQuestion[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is FollowUpQuestion => {
+    if (!item || typeof item !== "object") return false;
+    const candidate = item as Record<string, unknown>;
+    return (
+      typeof candidate.field === "string" &&
+      typeof candidate.question === "string" &&
+      Array.isArray(candidate.options) &&
+      candidate.options.every((opt) => typeof opt === "string")
+    );
+  });
+}
+
 /* ── Shared nav ── */
 function Navbar() {
   return (
@@ -59,7 +73,7 @@ export default function AnalyzePage() {
   const handleMessage = useCallback((ev: ProgressEvent) => {
     appendEvent(ev);
     if (ev.step === "followup" && ev.status === "waiting") {
-      setFollowUpQuestions(ev.data?.questions ?? []);
+      setFollowUpQuestions(normalizeFollowUpQuestions(ev.data?.questions));
       setPageState("follow_up");
     } else if (ev.step === "completed" && ev.status === "completed") {
       const rid = ev.data?.report_id as string | undefined;
@@ -93,7 +107,7 @@ export default function AnalyzePage() {
 
   function handleFollowUpSubmit(answers: Record<string, string>) {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
-    wsRef.current.send(JSON.stringify({ type: "followup_answers", answers }));
+    wsRef.current.send(JSON.stringify({ type: "followup_response", answers }));
     setFollowUpQuestions([]);
     setPageState("in_progress");
   }

@@ -1,16 +1,13 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { getReport } from "@/lib/api";
 import type { AuditReport } from "@/lib/types";
 import ReportViewer from "@/components/report-viewer";
 import CitationPanel from "@/components/citation-panel";
 import RiskBadge from "@/components/risk-badge";
-
-interface Props {
-  params: Promise<{ id: string }>;
-}
 
 function ExportIcon({ path }: { path: string }) {
   return (
@@ -55,10 +52,15 @@ function buildMarkdown(report: AuditReport): string {
   if (report.evidence_citations.length > 0) {
     lines.push(`\n## 法规引用\n`);
     report.evidence_citations.forEach((c) => {
-      lines.push(`### ${c.regulation} ${c.article_id}`);
-      lines.push(`*${c.chapter}*\n`);
-      lines.push(`> ${c.text_excerpt}`);
-      lines.push(`\n相关度：${c.relevance_score.toFixed(2)}\n`);
+      const article = c.article_id || c.article || "条款未标注";
+      const chapter = c.chapter || "章节未标注";
+      const excerpt = c.text_excerpt || c.text || c.summary || "暂无摘录";
+      const score = Number(c.relevance_score ?? c.rerank_score ?? 0);
+      const safeScore = Number.isFinite(score) ? Math.max(0, Math.min(1, score)) : 0;
+      lines.push(`### ${c.regulation} ${article}`);
+      lines.push(`*${chapter}*\n`);
+      lines.push(`> ${excerpt}`);
+      lines.push(`\n相关度：${safeScore.toFixed(2)}\n`);
     });
   }
 
@@ -66,18 +68,22 @@ function buildMarkdown(report: AuditReport): string {
   return lines.join("\n");
 }
 
-export default function ReportDetailPage({ params }: Props) {
-  const { id } = use(params);
+export default function ReportDetailPage() {
+  const params = useParams<{ id: string }>();
+  const id = typeof params?.id === "string" ? params.id : "";
   const [report, setReport] = useState<AuditReport | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const loading = id ? isLoading : false;
+  const viewError = id ? error : "无效的报告 ID";
 
   useEffect(() => {
+    if (!id) return;
     getReport(id)
       .then(setReport)
       .catch((err) => setError(err instanceof Error ? err.message : "加载失败"))
-      .finally(() => setLoading(false));
+      .finally(() => setIsLoading(false));
   }, [id]);
 
   function handleExportMarkdown() {
@@ -158,7 +164,7 @@ export default function ReportDetailPage({ params }: Props) {
         )}
 
         {/* Error state */}
-        {error && !loading && (
+        {viewError && !loading && (
           <div
             className="glass-card p-8 flex flex-col items-center gap-4 text-center max-w-lg mx-auto mt-12"
             style={{ borderColor: "rgba(248,113,113,0.3)" }}
@@ -170,7 +176,7 @@ export default function ReportDetailPage({ params }: Props) {
             </svg>
             <div>
               <h2 className="text-lg font-semibold mb-1" style={{ color: "#f87171" }}>报告加载失败</h2>
-              <p className="text-sm" style={{ color: "#8a8f98" }}>{error}</p>
+              <p className="text-sm" style={{ color: "#8a8f98" }}>{viewError}</p>
             </div>
             <Link href="/reports" className="btn-secondary px-4 py-2 text-sm">返回列表</Link>
           </div>

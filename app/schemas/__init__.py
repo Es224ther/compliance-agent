@@ -9,12 +9,13 @@ from app.schemas.risk import (
     RiskLevel,
 )
 from app.schemas.scenario import ParsedFields, ScenarioInput
-from app.schemas.state import PipelineStatus, SharedState
+from app.schemas.state import FollowUpQuestion, PipelineStatus, SharedState
 
 __all__ = [
     "AuditReport",
     "EscalationResult",
     "EvidenceChunk",
+    "FollowUpQuestion",
     "ParsedFields",
     "PipelineStatus",
     "RemediationAction",

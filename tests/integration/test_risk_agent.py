@@ -1,9 +1,9 @@
 import asyncio
 
-from agents.risk_agent import MAX_REACT_STEPS, MAX_RETRIEVAL_ACTIONS, RiskAgent
-from schemas.evidence import EvidenceChunk
-from schemas.risk import RiskLevel
-from schemas.scenario import ParsedFields
+from app.agents.risk_agent import MAX_REACT_STEPS, MAX_RETRIEVAL_ACTIONS, RiskAgent
+from app.schemas.evidence import EvidenceChunk
+from app.schemas.risk import RiskLevel
+from app.schemas.scenario import ParsedFields
 
 
 def _chunk(

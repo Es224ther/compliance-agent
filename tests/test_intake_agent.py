@@ -1,6 +1,6 @@
-from agents.intake_agent import IntakeAgent
+from app.agents.intake_agent import IntakeAgent
 from app.schemas import ScenarioInput, SharedState
-from config.settings import Settings
+from app.config.settings import Settings
 
 
 def test_intake_agent_loads_prompt_and_validates_tool_output(mock_llm_client) -> None:

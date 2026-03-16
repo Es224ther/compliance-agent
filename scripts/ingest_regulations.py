@@ -9,11 +9,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from rag.ingest.chunker import chunk_regulation
-from rag.ingest.cross_ref import enrich_chunks_with_cross_refs
-from rag.ingest.metadata import enrich_chunks_with_tags
-from rag.ingest.summary_augmenter import augment_summaries
-from rag.kb.vector_store import VectorStore
+from app.rag.ingest.chunker import chunk_regulation
+from app.rag.ingest.cross_ref import enrich_chunks_with_cross_refs
+from app.rag.ingest.metadata import enrich_chunks_with_tags
+from app.rag.ingest.summary_augmenter import augment_summaries
+from app.rag.kb.vector_store import VectorStore
 
 
 REGULATION_FILES = {

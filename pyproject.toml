@@ -6,7 +6,6 @@ authors = ["Es224ther"]
 readme = "README.md"
 packages = [
   { include = "app" },
-  { include = "config" },
 ]
 
 [tool.poetry.dependencies]

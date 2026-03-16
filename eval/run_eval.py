@@ -13,7 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from app.schemas import ParsedFields
-from rag.retriever.hybrid import hybrid_search
+from app.rag.retriever.hybrid import hybrid_search
 
 
 DEFAULT_RETRIEVAL_CASES = ROOT / "eval" / "test_cases" / "retrieval_tests.csv"

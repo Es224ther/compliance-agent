@@ -1,5 +1,5 @@
 from app.schemas import ParsedFields, ScenarioInput, SharedState
-from guards.field_rules import check_completeness, generate_followup_prompt
+from app.guards.field_rules import check_completeness, generate_followup_prompt
 
 
 def test_missing_region_triggers_followup() -> None:

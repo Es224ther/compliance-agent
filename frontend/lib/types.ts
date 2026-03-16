@@ -9,10 +9,14 @@ export interface ParsedFields {
 
 export interface EvidenceChunk {
   regulation: string;
-  article_id: string;
-  chapter: string;
-  text_excerpt: string;
-  relevance_score: number;
+  article_id?: string;
+  article?: string;
+  chapter?: string | null;
+  text_excerpt?: string;
+  text?: string;
+  summary?: string | null;
+  relevance_score?: number;
+  rerank_score?: number | null;
 }
 
 export interface RemediationAction {
@@ -37,7 +41,8 @@ export interface AuditReport {
 
 export interface ReportSummary {
   report_id: string;
-  summary: string;
+  summary?: string;
+  risk_overview?: string;
   risk_level: "Low" | "Medium" | "High" | "Critical";
   created_at: string;
 }

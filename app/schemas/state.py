@@ -25,6 +25,16 @@ class PipelineStatus(str, Enum):
     FAILED = "FAILED"
 
 
+class FollowUpQuestion(BaseModel):
+    """Structured follow-up question payload for frontend interaction."""
+
+    model_config = ConfigDict(strict=False)
+
+    field: str
+    question: str
+    options: list[str] = Field(default_factory=list)
+
+
 class SharedState(BaseModel):
     """Container carried across the compliance analysis pipeline."""
 
@@ -38,7 +48,7 @@ class SharedState(BaseModel):
     pii_map: dict[str, Any] = Field(default_factory=dict)
     followup_rounds: int = 0
     followup_prompt: str | None = None
-    followup_questions: list[str] | None = None
+    followup_questions: list[FollowUpQuestion] | None = None
     missing_fields: list[str] = Field(default_factory=list)
     risk_level: str | None = None
     evidence: list[EvidenceChunk] = Field(default_factory=list)

@@ -11,9 +11,9 @@ from pydantic import BaseModel, ConfigDict
 
 from app.api.store import store
 from app.api.websocket import ws_manager
-from orchestrator.pipeline import run_pipeline
-from schemas.report import AuditReport
-from schemas.scenario import ScenarioInput
+from app.orchestrator.pipeline import run_pipeline
+from app.schemas.report import AuditReport
+from app.schemas.scenario import ScenarioInput
 
 router = APIRouter(tags=["api"])
 

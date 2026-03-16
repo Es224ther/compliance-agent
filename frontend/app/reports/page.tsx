@@ -30,6 +30,11 @@ function truncate(text: string, max = 80): string {
   return text.length > max ? text.slice(0, max) + "…" : text;
 }
 
+function getReportSummary(report: ReportSummary): string {
+  const text = report.summary || report.risk_overview || "无摘要";
+  return truncate(text);
+}
+
 function SkeletonRow() {
   return (
     <div
@@ -245,7 +250,7 @@ export default function ReportsPage() {
                       className="text-sm font-medium mb-1 transition-colors duration-150"
                       style={{ color: "#ededef", lineHeight: 1.6 }}
                     >
-                      {truncate(r.summary)}
+                      {getReportSummary(r)}
                     </p>
                     <div className="flex items-center gap-3">
                       <span
