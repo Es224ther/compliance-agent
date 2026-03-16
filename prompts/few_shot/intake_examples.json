@@ -1,12 +1,12 @@
 [
   {
-    "input": "我们在德国上线一个智能客服功能，会把用户提交的姓名、邮箱和聊天记录发送给美国的第三方大模型做推理，并向终端用户返回自动生成的答复。",
+    "input": "我们计划把欧洲用户上传的短视频素材传回国内服务器，用于训练一个 AI 视频剪辑模型。训练完成后模型部署在国内，服务全球用户。视频中可能包含用户人脸。",
     "output": {
-      "region": "EU",
-      "data_types": ["Personal"],
+      "region": "EU+CN",
+      "data_types": ["Personal", "Biometric"],
       "cross_border": true,
-      "third_party_model": true,
-      "aigc_output": true,
+      "third_party_model": false,
+      "aigc_output": null,
       "data_volume_level": null
     }
   },

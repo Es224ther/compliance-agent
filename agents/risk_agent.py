@@ -13,11 +13,11 @@ from schemas.evidence import EvidenceChunk
 from schemas.risk import RemediationAction, RiskAssessment, RiskLevel
 from schemas.scenario import ParsedFields
 from tools.rag_retriever import rag_retriever
-from tools.risk_scorer import calculate_risk_level
+from tools.risk_scorer import build_risk_debug_trace, calculate_risk_level
 
 MAX_RETRIEVAL_ACTIONS = 2
 MAX_REACT_STEPS = 6
-DEFAULT_MODEL_NAME = "claude-sonnet-4-20250514"
+DEFAULT_MODEL_NAME = "qwen-plus"
 PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 SYSTEM_PROMPT_PATH = PROMPTS_DIR / "system" / "risk.txt"
 FEW_SHOT_PATH = PROMPTS_DIR / "few_shot" / "risk_examples.json"
@@ -89,6 +89,7 @@ class RiskAgent(ReActAgent):
 
             self._tick_step()  # Act-3
             risk_level, risk_summary, scoring_factors = self.scorer(evidence, parsed_fields)
+            debug_trace = build_risk_debug_trace(evidence, risk_level, scoring_factors)
 
             self._tick_step()  # Think-2
             jurisdictions_covered = self._extract_jurisdictions(evidence)
@@ -97,7 +98,8 @@ class RiskAgent(ReActAgent):
                 risk_summary=risk_summary,
                 evidence=evidence,
             )
-            remediation = self._build_remediation(risk_level, evidence)
+            reasoning = f"{reasoning}\n\n【Scoring Debug】\n{debug_trace}"
+            remediation = self._build_remediation(risk_level, parsed_fields, evidence)
 
         except RuntimeError:
             requires_escalation = True
@@ -108,7 +110,7 @@ class RiskAgent(ReActAgent):
             scoring_factors = []
             jurisdictions_covered = self._default_jurisdictions(parsed_fields)
             reasoning = "证据链因循环上限中断，当前结论仅供前置风险参考。"
-            remediation = self._build_remediation(risk_level, evidence)
+            remediation = self._build_remediation(risk_level, parsed_fields, evidence)
 
         payload = {
             "risk_level": risk_level,
@@ -258,30 +260,97 @@ class RiskAgent(ReActAgent):
     @staticmethod
     def _build_remediation(
         risk_level: RiskLevel,
+        parsed_fields: ParsedFields,
         evidence: list[EvidenceChunk],
     ) -> list[RemediationAction]:
-        first_ref = (
-            f"{evidence[0].regulation} {evidence[0].article}" if evidence else "Regulatory evidence"
+        immediate = (
+            "Immediate"
+            if risk_level in {RiskLevel.CRITICAL, RiskLevel.HIGH}
+            else "Short-term"
         )
-        immediate = "Immediate" if risk_level == RiskLevel.CRITICAL else "Short-term"
+        has_cn = (
+            parsed_fields.region in {"CN", "EU+CN", "Global"}
+            or any(str(chunk.jurisdiction).upper() == "CN" for chunk in evidence)
+        )
+        has_cross_border = bool(parsed_fields.cross_border)
+        has_biometric = "Biometric" in (parsed_fields.data_types or [])
+
+        data_element = "视频素材及其中的人脸生物特征信息" if has_biometric else "用户上传内容与个人信息"
+        transfer_target = "中国境内训练集群" if has_cn else "目标训练集群"
+
+        pm_ref_primary = (
+            "GDPR Article 9, PIPL 第十四条"
+            if has_biometric and has_cn
+            else "GDPR Article 7"
+        )
+        pm_ref_secondary = "GDPR Article 13/14, PIPL 第十七条" if has_cn else "GDPR Article 13/14"
+        dev_ref_primary = "GDPR Article 25"
+        dev_ref_secondary = "GDPR Article 32, PIPL 第五十一条" if has_cn else "GDPR Article 32"
+        security_ref_primary = "GDPR Article 35"
+        security_ref_secondary = (
+            "PIPL 第三十八条, DSL 第二十四条"
+            if has_cn and has_cross_border
+            else ("PIPL 第五十五条" if has_cn else "GDPR Article 30")
+        )
+
+        dev_action_primary = (
+            "在上传管道增加人脸检测与最小化处理步骤：对包含人脸帧的素材先做模糊化或分段加密，再进入跨境传输链路。"
+            if has_biometric
+            else "在上传与训练前处理链路增加字段级最小化与脱敏策略，仅保留完成模型训练所必需的数据特征。"
+        )
+        security_action_primary = (
+            "启动 DPIA，重点评估大规模处理生物特征数据的必要性、比例性、数据主体权利影响与剩余风险处置方案。"
+            if has_biometric
+            else "启动 DPIA，评估跨境训练场景下数据主体权利影响、处理必要性以及风险缓解措施的充分性。"
+        )
+
         return [
             RemediationAction(
                 role="PM",
-                action="梳理跨法域数据流与用户告知口径，形成发布前合规检查清单。",
+                action=(
+                    f"在用户上传入口增加单独授权弹窗，明确告知 {data_element} "
+                    f"将跨境传输至 {transfer_target} 用于模型训练，并提供拒绝后仍可使用基础功能的替代路径。"
+                ),
                 priority=immediate,
-                regulation_ref=first_ref,
+                regulation_ref=pm_ref_primary,
+            ),
+            RemediationAction(
+                role="PM",
+                action=(
+                    "在隐私政策新增“跨境传输与模型训练”专章，逐项披露接收方、处理目的、保留期限、"
+                    "撤回同意入口和删除请求路径。"
+                ),
+                priority=immediate,
+                regulation_ref=pm_ref_secondary,
             ),
             RemediationAction(
                 role="Dev",
-                action="补齐跨境传输与第三方模型调用的技术控制点，并保留审计日志。",
+                action=dev_action_primary,
                 priority=immediate,
-                regulation_ref=first_ref,
+                regulation_ref=dev_ref_primary,
+            ),
+            RemediationAction(
+                role="Dev",
+                action=(
+                    "跨境传输链路统一启用 TLS 1.3，落盘使用 AES-256；同时记录传输日志（时间、数据量、目标节点、任务 ID）并保留审计记录。"
+                ),
+                priority=immediate,
+                regulation_ref=dev_ref_secondary,
             ),
             RemediationAction(
                 role="Security",
-                action="建立高风险场景人工复核闸口，确保上线前完成安全与合规联审。",
+                action=security_action_primary,
                 priority=immediate,
-                regulation_ref=first_ref,
+                regulation_ref=security_ref_primary,
+            ),
+            RemediationAction(
+                role="Security",
+                action=(
+                    "针对数据出境链路建立季度合规复核机制；若触发敏感个人信息或大规模阈值，"
+                    "向主管部门启动数据出境安全评估/备案流程并跟踪整改闭环。"
+                ),
+                priority=immediate,
+                regulation_ref=security_ref_secondary,
             ),
         ]
 

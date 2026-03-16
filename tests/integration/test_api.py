@@ -153,3 +153,20 @@ def test_websocket_progress_replay(monkeypatch):
 
         assert first["step"] == "pii_sanitization"
         assert second["step"] == "completed"
+
+
+def test_get_evidence_full_text():
+    class _StubVectorStore:
+        def get_by_id(self, chunk_id: str):
+            if chunk_id == "chunk-1":
+                return {"chunk_id": "chunk-1", "text": "法规全文内容"}
+            return None
+
+    with TestClient(app) as client:
+        client.app.state.vector_store = _StubVectorStore()
+        ok = client.get("/api/v1/evidence/chunk-1")
+        assert ok.status_code == 200
+        assert ok.json() == {"chunk_id": "chunk-1", "full_text": "法规全文内容"}
+
+        missing = client.get("/api/v1/evidence/chunk-404")
+        assert missing.status_code == 404

@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+import json
 
 import pytest
 
@@ -10,7 +11,7 @@ from schemas.risk import RemediationAction, RiskAssessment, RiskLevel
 from schemas.scenario import ParsedFields, ScenarioInput
 from schemas.state import SharedState
 
-class StubMessagesAPI:
+class StubChatCompletionsAPI:
     def __init__(self, response: object | None = None) -> None:
         self.response = response
         self.calls: list[dict] = []
@@ -22,22 +23,24 @@ class StubMessagesAPI:
         return self.response
 
 
-class StubAnthropicClient:
+class StubOpenAIClient:
     def __init__(self, response: object | None = None) -> None:
-        self.messages = StubMessagesAPI(response=response)
+        self.chat = SimpleNamespace(
+            completions=StubChatCompletionsAPI(response=response),
+        )
 
 
 @pytest.fixture
 def mock_llm_client(monkeypatch):
-    client = StubAnthropicClient()
+    client = StubOpenAIClient()
 
-    def _set_response(payload: dict) -> StubAnthropicClient:
-        client.messages.response = SimpleNamespace(
-            content=[
+    def _set_response(payload: dict) -> StubOpenAIClient:
+        client.chat.completions.response = SimpleNamespace(
+            choices=[
                 SimpleNamespace(
-                    type="tool_use",
-                    name="parse_scenario",
-                    input=payload,
+                    message=SimpleNamespace(
+                        content=json.dumps(payload, ensure_ascii=False),
+                    )
                 )
             ]
         )

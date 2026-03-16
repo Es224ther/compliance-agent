@@ -90,8 +90,13 @@ def calculate_risk_level(
             }
         )
 
-    summary = _build_summary(base_level, current_level, scoring_factors)
-    return current_level, summary, scoring_factors
+    risk_overview = _generate_human_readable_overview(
+        parsed_fields=parsed_fields,
+        final_level=current_level,
+        scoring_factors=scoring_factors,
+        evidence_chunks=evidence,
+    )
+    return current_level, risk_overview, scoring_factors
 
 
 def _normalize_evidence(evidence: list[EvidenceChunk]) -> str:
@@ -125,7 +130,18 @@ def _bump_level(level: RiskLevel) -> RiskLevel:
     return _LEVEL_ORDER[index + 1]
 
 
-def _build_summary(
+def build_risk_debug_trace(
+    evidence: list[EvidenceChunk],
+    final_level: RiskLevel,
+    scoring_factors: list[dict[str, Any]],
+) -> str:
+    """Build developer-facing debug trace for scoring diagnostics."""
+
+    base_level = _detect_base_level(_normalize_evidence(evidence))
+    return _build_debug_summary(base_level, final_level, scoring_factors)
+
+
+def _build_debug_summary(
     base_level: RiskLevel,
     final_level: RiskLevel,
     scoring_factors: list[dict[str, Any]],
@@ -137,3 +153,48 @@ def _build_summary(
         f"Base level {base_level.value}; triggered rules: {rules}; "
         f"final level {final_level.value}."
     )
+
+
+def _generate_human_readable_overview(
+    parsed_fields: ParsedFields,
+    final_level: RiskLevel,
+    scoring_factors: list[dict[str, Any]],
+    evidence_chunks: list[EvidenceChunk],
+) -> str:
+    parts: list[str] = []
+    data_types = parsed_fields.data_types or []
+
+    if "Biometric" in data_types:
+        parts.append("涉及生物特征数据（如人脸信息）的处理")
+    elif "Personal" in data_types:
+        parts.append("涉及个人数据处理")
+    elif data_types:
+        parts.append(f"涉及{'、'.join(data_types)}数据处理")
+
+    if parsed_fields.cross_border:
+        parts.append("数据存在跨境传输")
+    if parsed_fields.third_party_model:
+        parts.append("涉及第三方模型服务")
+    if parsed_fields.aigc_output:
+        parts.append("存在面向用户的 AI 生成内容输出")
+
+    rule_descriptions = {
+        "biometric_force_critical": "生物特征数据处理触发了特殊类别数据保护要求",
+        "cross_border_plus_third_party": "跨境传输叠加第三方处理提高了合规风险",
+        "aigc_cn_regulation": "AIGC 场景触发了额外透明度与标识义务",
+        "dual_jurisdiction_complexity": "双法域并行义务提高了治理复杂度",
+    }
+    for factor in scoring_factors:
+        rule = str(factor.get("rule", ""))
+        description = rule_descriptions.get(rule)
+        if description:
+            parts.append(description)
+
+    regulations = sorted({chunk.regulation for chunk in evidence_chunks if chunk.regulation})
+    if regulations:
+        parts.append(f"涉及 {'/'.join(regulations)} 等法规要求")
+
+    if not parts:
+        parts.append("当前证据显示存在基础合规义务")
+
+    return "本场景" + "，".join(parts) + f"，综合风险等级为 {final_level.value}。"

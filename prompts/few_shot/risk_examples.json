@@ -82,5 +82,46 @@
       "scoring_factors": []
     },
     "rationale": "Cross-jurisdiction AIGC has additive complexity from both frameworks."
+  },
+  {
+    "scenario": "欧洲用户视频跨境传输至中国训练 AI 模型",
+    "remediation_actions": [
+      {
+        "role": "PM",
+        "action": "在视频上传流程中增加专项授权弹窗，明确告知用户视频将跨境传输至中国用于模型训练，且视频中的人脸生物特征信息将被处理。参考 GDPR Art.9(2)(a) 的显式同意要求和 PIPL 第十四条的单独同意要求。",
+        "priority": "Immediate",
+        "regulation_ref": "GDPR Article 9, PIPL 第十四条"
+      },
+      {
+        "role": "PM",
+        "action": "更新隐私政策，增加「数据跨境传输」和「AI 模型训练」专项章节，说明数据接收方、传输目的、保留期限和用户权利行使方式。",
+        "priority": "Immediate",
+        "regulation_ref": "GDPR Article 13/14, PIPL 第十七条"
+      },
+      {
+        "role": "Dev",
+        "action": "在视频上传管道中增加人脸检测模块（如 MediaPipe Face Detection），对检出人脸的帧自动触发模糊化或加密处理后再传输，最小化生物特征数据的跨境暴露。",
+        "priority": "Immediate",
+        "regulation_ref": "GDPR Article 25（数据保护设计）"
+      },
+      {
+        "role": "Dev",
+        "action": "跨境传输链路实施 TLS 1.3 加密 + 落盘 AES-256 加密，建立传输日志审计表（记录每次传输的数据量、时间戳、目标服务器 IP），日志保留不少于 3 年。",
+        "priority": "Immediate",
+        "regulation_ref": "GDPR Article 32, PIPL 第五十一条"
+      },
+      {
+        "role": "Security",
+        "action": "启动数据保护影响评估（DPIA），评估范围覆盖：(1) 大规模处理欧盟用户生物特征数据的必要性与比例性；(2) 向中国传输数据的风险评估；(3) 用户权利保障措施的充分性。",
+        "priority": "Immediate",
+        "regulation_ref": "GDPR Article 35"
+      },
+      {
+        "role": "Security",
+        "action": "依据 PIPL 第三十八条和《数据出境安全评估办法》，向国家网信部门申报数据出境安全评估（处理超过 10 万人个人信息或 1 万人敏感个人信息的出境场景须申报）。",
+        "priority": "Immediate",
+        "regulation_ref": "PIPL 第三十八条, DSL 第二十四条"
+      }
+    ]
   }
 ]

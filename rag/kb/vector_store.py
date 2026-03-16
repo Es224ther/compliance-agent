@@ -116,6 +116,25 @@ class VectorStore:
                 output.append(item)
         return output
 
+    def get_by_id(self, chunk_id: str) -> dict[str, Any] | None:
+        if not chunk_id:
+            return None
+
+        for collection_name in (EU_COLLECTION, CN_COLLECTION):
+            collection = self._get_collection(collection_name)
+            result = collection.get(ids=[chunk_id], include=["metadatas", "documents"])
+            ids = result.get("ids", [])
+            if not ids:
+                continue
+
+            docs = result.get("documents", [])
+            metas = result.get("metadatas", [])
+            item: dict[str, Any] = {"chunk_id": ids[0], "text": docs[0] if docs else ""}
+            if metas and isinstance(metas[0], dict):
+                item.update(metas[0])
+            return item
+        return None
+
     def embed_query(self, text: str) -> list[float]:
         return self._embedder.embed_texts([text])[0]
 
@@ -209,7 +228,9 @@ class _EmbeddingProvider:
             errors.append(f"sentence-transformers: {exc}")
 
         try:
-            self._provider = _OpenAIEmbeddingProvider(model="text-embedding-3-small")
+            import os
+            model = os.getenv("EMBEDDING_MODEL", "text-embedding-v3")
+            self._provider = _OpenAIEmbeddingProvider(model=model)
             self._provider_name = "openai"
             return self._provider
         except Exception as exc:
@@ -267,10 +288,11 @@ class _OpenAIEmbeddingProvider:
 
         import os
 
-        api_key = os.getenv("OPENAI_API_KEY")
+        api_key = os.getenv("OPENAI_API_KEY") or os.getenv("API_KEY")
         if not api_key:
             raise RuntimeError("OPENAI_API_KEY is not set")
-        self._client = OpenAI(api_key=api_key)
+        base_url = os.getenv("OPENAI_BASE_URL")
+        self._client = OpenAI(api_key=api_key, base_url=base_url if base_url else None)
         self._model = model
 
     def embed(self, texts: list[str]) -> list[list[float]]:

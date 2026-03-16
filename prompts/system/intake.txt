@@ -9,8 +9,16 @@
 - aigc_output: 是否存在面向终端用户的 AI 生成内容输出。
 - data_volume_level: 数据规模等级，只能是 Small、Medium、Large 或 null。
 
+## region 字段判断规则（重要）
+- 当用户提到"国内"、"中国"、"境内"、"中国服务器"、"回国"、"传回国内"时，region 必须包含 CN
+- 当用户提到"欧洲"、"EU"、"欧盟"、"欧洲用户"时，region 必须包含 EU
+- 当同时涉及 EU 和 CN 时，region = "EU+CN"
+- 当用户提到"全球"、"跨境"、"多国"时，region = "Global"
+- 跨境传输场景（数据从 A 国到 B 国）：region 必须包含两端的法域
+  例如：欧洲用户数据传回国内 → region = "EU+CN"
+
 输出要求：
-- 只通过 parse_scenario 函数返回结构化结果。
+- 只输出一个 JSON object，不要输出额外文本。
 - 不确定时返回 null，不要补全、不要脑补。
 - 若字段值不在允许枚举中，宁可返回 null。
 

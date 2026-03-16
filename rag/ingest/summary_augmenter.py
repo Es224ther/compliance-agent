@@ -16,7 +16,7 @@ SYSTEM_PROMPT = """
 不要使用"本条款"开头，直接描述内容。
 """.strip()
 
-DEFAULT_SUMMARY_MODEL = "claude-sonnet-4-20250514"
+DEFAULT_SUMMARY_MODEL = "qwen-plus"
 DEFAULT_CACHE_PATH = Path("data/kb/summary_cache.json")
 
 
@@ -61,7 +61,12 @@ async def augment_summaries_async(
             if not chunk_id:
                 return
             async with semaphore:
-                summary = await _generate_summary(client, chunk, model_name=resolved_model_name)
+                try:
+                    summary = await _generate_summary(client, chunk, model_name=resolved_model_name)
+                except Exception:
+                    summary = generate_summary_fallback(chunk)
+                if not summary.strip():
+                    summary = generate_summary_fallback(chunk)
                 cache[chunk_id] = summary
                 _save_cache(cache_file, cache)
 
@@ -71,7 +76,10 @@ async def augment_summaries_async(
     for chunk in chunks:
         copied = dict(chunk)
         chunk_id = str(copied.get("chunk_id", "")).strip()
-        copied["summary"] = cache.get(chunk_id, "")
+        cached_summary = cache.get(chunk_id, "")
+        if not str(cached_summary).strip():
+            cached_summary = generate_summary_fallback(copied)
+        copied["summary"] = cached_summary
         enriched.append(copied)
     return enriched
 
@@ -83,12 +91,14 @@ async def _generate_summary(
     model_name: str,
 ) -> str:
     payload = _build_user_payload(chunk)
-    response = await client.messages.create(
+    response = await client.chat.completions.create(
         model=model_name,
-        system=SYSTEM_PROMPT,
         max_tokens=220,
         temperature=0.1,
-        messages=[{"role": "user", "content": payload}],
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": payload},
+        ],
     )
     return _read_text_response(response).strip()
 
@@ -111,11 +121,26 @@ def _build_user_payload(chunk: dict[str, Any]) -> str:
 
 
 def _read_text_response(response: Any) -> str:
-    for block in getattr(response, "content", []):
-        text = getattr(block, "text", None)
-        if text:
-            return text
+    choices = getattr(response, "choices", None) or []
+    if choices:
+        content = getattr(getattr(choices[0], "message", None), "content", None)
+        if isinstance(content, str):
+            return content
     return ""
+
+
+def generate_summary_fallback(chunk: dict[str, Any]) -> str:
+    """Generate short summary from the first two substantive lines."""
+
+    text = str(chunk.get("text", "") or "")
+    lines = [line.strip() for line in text.split("\n") if line.strip() and len(line.strip()) > 20]
+    if not lines:
+        return text[:197] + ("..." if len(text) > 200 else "")
+
+    summary = " ".join(lines[:2])[:200]
+    if len(summary) < len(" ".join(lines[:2])):
+        summary = summary[:197] + "..."
+    return summary
 
 
 def _load_cache(cache_file: Path) -> dict[str, str]:
@@ -145,4 +170,3 @@ def _resolve_model_name(model_name: str | None) -> str:
     if configured and configured.strip():
         return configured.strip()
     return DEFAULT_SUMMARY_MODEL
-

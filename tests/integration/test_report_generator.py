@@ -98,6 +98,10 @@ def test_report_generator_scenario_a_contract() -> None:
     assert report.evidence_citations[0].text == "SCC obligations for transfer."
     assert report.evidence_citations[1].text == "数据出境安全评估要求。"
     assert "建议贵司" in report.risk_overview
+    assert "系统已完成" not in report.summary
+    assert "已关联法规证据" not in report.summary
+    assert "。。" not in report.summary
+    assert len(report.summary) <= 100
 
     payload = report.to_json()
     validated = AuditReport.model_validate(payload)

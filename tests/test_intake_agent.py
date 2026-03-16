@@ -16,7 +16,8 @@ def test_intake_agent_loads_prompt_and_validates_tool_output(mock_llm_client) ->
     )
     settings = Settings.model_construct(
         api_key="test-key",
-        model_name="claude-sonnet-4-20250514",
+        model_name="qwen-plus",
+        openai_base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
     )
 
     agent = IntakeAgent(settings=settings)
@@ -32,13 +33,11 @@ def test_intake_agent_loads_prompt_and_validates_tool_output(mock_llm_client) ->
     assert output.final_output.parsed_fields.data_volume_level is None
     assert output.final_output.invalid_fields == ["data_volume_level"]
     assert output.final_output.requires_followup is False
-    assert client.messages.calls[0]["tool_choice"] == {
-        "type": "tool",
-        "name": "parse_scenario",
-    }
-    schema = client.messages.calls[0]["tools"][0]["input_schema"]
+    assert client.chat.completions.calls[0]["messages"][0]["role"] == "system"
+    schema = client.chat.completions.calls[0]["response_format"]["json_schema"]["schema"]
     assert schema["additionalProperties"] is False
     assert schema["propertyOrdering"][0] == "region"
+    assert schema["required"][-1] == "data_volume_level"
 
 
 def test_intake_agent_generates_followup_when_required_fields_are_missing(
@@ -56,7 +55,8 @@ def test_intake_agent_generates_followup_when_required_fields_are_missing(
     )
     settings = Settings.model_construct(
         api_key="test-key",
-        model_name="claude-sonnet-4-20250514",
+        model_name="qwen-plus",
+        openai_base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
     )
 
     agent = IntakeAgent(settings=settings)
@@ -81,7 +81,8 @@ def test_intake_agent_stops_followup_after_two_rounds(mock_llm_client) -> None:
     )
     settings = Settings.model_construct(
         api_key="test-key",
-        model_name="claude-sonnet-4-20250514",
+        model_name="qwen-plus",
+        openai_base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
     )
 
     agent = IntakeAgent(settings=settings)
@@ -100,30 +101,36 @@ def test_intake_agent_stops_followup_after_two_rounds(mock_llm_client) -> None:
     ]
 
 
-def test_extract_tool_use_reads_anthropic_tool_use_block() -> None:
+def test_extract_payload_reads_json_response() -> None:
     from types import SimpleNamespace
+    import json
 
     response = SimpleNamespace(
-        content=[
+        choices=[
             SimpleNamespace(
-                type="tool_use",
-                name="parse_scenario",
-                input={
-                    "region": "EU",
-                    "data_types": ["Personal"],
-                    "cross_border": True,
-                },
+                message=SimpleNamespace(
+                    content=json.dumps(
+                        {
+                            "region": "EU",
+                            "data_types": ["Personal"],
+                            "cross_border": True,
+                            "third_party_model": None,
+                            "aigc_output": None,
+                            "data_volume_level": None,
+                        }
+                    )
+                )
             )
         ]
     )
 
-    tool_use = IntakeAgent._extract_tool_use(response)
+    payload = IntakeAgent._extract_payload(response)
 
-    assert tool_use == {
-        "name": "parse_scenario",
-        "input": {
-            "region": "EU",
-            "data_types": ["Personal"],
-            "cross_border": True,
-        },
+    assert payload == {
+        "region": "EU",
+        "data_types": ["Personal"],
+        "cross_border": True,
+        "third_party_model": None,
+        "aigc_output": None,
+        "data_volume_level": None,
     }

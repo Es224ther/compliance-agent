@@ -30,3 +30,7 @@ data/kb/summary_cache.json
 
 # 8. 忽略评测输出
 eval/results.csv
+
+# 9. 忽略本地任务文档
+task_03.md
+task_04.md

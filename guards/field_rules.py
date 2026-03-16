@@ -51,6 +51,27 @@ QUESTION_BANK = {
     ),
 }
 
+FIELD_UNCERTAINTY_MAP = {
+    "aigc_output": (
+        "用户未明确说明 AI 生成内容是否面向终端用户。若生成内容面向公众，"
+        "可能触发 EU AI Act 第 50 条透明度义务和《AIGC 标识办法》的标识要求。"
+    ),
+    "data_volume_level": (
+        "用户未说明数据处理规模。若处理超过 10 万人个人信息或 1 万人敏感个人信息，"
+        "可能触发 PIPL 第四十条的数据出境安全评估申报义务。"
+    ),
+    "third_party_model": (
+        "用户未明确是否涉及第三方模型调用。若涉及第三方处理，需额外评估数据共享的合规要求。"
+    ),
+}
+
+HEDGING_PATTERNS = [
+    ("可能", '用户描述中使用了"可能"，对应内容的确定性不足'),
+    ("也许", '用户描述中使用了"也许"，对应内容的确定性不足'),
+    ("不确定", "用户表示不确定"),
+    ("暂时", "用户描述为暂时性方案，最终方案可能变化"),
+]
+
 
 def check_completeness(parsed_fields: ParsedFields) -> list[str]:
     """Return missing required fields."""
@@ -72,3 +93,25 @@ def generate_followup_prompt(missing_fields: list[str]) -> str:
         for index, field_name in enumerate(selected_fields, start=1)
     ]
     return template.format(questions="\n\n".join(questions))
+
+
+def generate_uncertainties(parsed_fields: ParsedFields, raw_text: str) -> list[str]:
+    """Generate uncertainty items from null fields and hedging words in raw text."""
+
+    uncertainties: list[str] = []
+    fields_dict = parsed_fields.model_dump() if hasattr(parsed_fields, "model_dump") else vars(parsed_fields)
+
+    for field_name, description in FIELD_UNCERTAINTY_MAP.items():
+        if fields_dict.get(field_name) is None:
+            uncertainties.append(f"[{field_name}] {description}")
+
+    for keyword, description in HEDGING_PATTERNS:
+        idx = raw_text.find(keyword)
+        if idx < 0:
+            continue
+        left = max(0, idx - 20)
+        right = min(len(raw_text), idx + len(keyword) + 20)
+        context = raw_text[left:right].strip()
+        uncertainties.append(f'[描述模糊] "{context}" — {description}')
+
+    return uncertainties

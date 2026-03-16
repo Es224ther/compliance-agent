@@ -1,0 +1,16 @@
+frontend/
+data/
+.venv/
+.git
+__pycache__
+**/__pycache__
+*.pyc
+.pytest_cache
+.env
+*.md
+task_*.md
+docs/
+eval/
+samples/
+poetry.lock
+node_modules/

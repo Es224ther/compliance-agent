@@ -2,17 +2,25 @@
 
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Typed runtime settings for the Compliance Agent."""
 
-    api_key: str = Field(..., alias="API_KEY")
+    api_key: str = Field(
+        ...,
+        alias="API_KEY",
+        validation_alias=AliasChoices("API_KEY", "OPENAI_API_KEY"),
+    )
     model_name: str = Field(
-        default="claude-sonnet-4-20250514",
+        default="qwen-plus",
         alias="MODEL_NAME",
+    )
+    openai_base_url: str = Field(
+        default="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        alias="OPENAI_BASE_URL",
     )
 
     model_config = SettingsConfigDict(

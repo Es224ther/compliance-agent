@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from anthropic import Anthropic
+from openai import OpenAI
 
 from agents.base import ReActAgent, ToolResult
 from app.schemas import ParsedFields, ScenarioInput, SharedState
@@ -19,7 +19,7 @@ from tools.schema_validator import SchemaValidationResult, validate_parse_scenar
 PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 SYSTEM_PROMPT_PATH = PROMPTS_DIR / "system" / "intake.txt"
 FEW_SHOT_PATH = PROMPTS_DIR / "few_shot" / "intake_examples.json"
-DEFAULT_MODEL_NAME = "claude-sonnet-4-20250514"
+DEFAULT_MODEL_NAME = "qwen-plus"
 
 
 @dataclass(slots=True)
@@ -40,14 +40,13 @@ class IntakeAgent(ReActAgent):
 
     def __init__(
         self,
-        client: Anthropic | None = None,
+        client: OpenAI | None = None,
         settings: Settings | None = None,
     ) -> None:
         self.settings = settings or get_settings()
         self.system_prompt = self._load_text(SYSTEM_PROMPT_PATH)
         self.few_shot_examples = self._load_examples(FEW_SHOT_PATH)
-        tools = [self._build_parse_tool_schema()]
-        super().__init__(tools=tools)
+        super().__init__(tools=[])
         self.client = client or get_client()
         self._current_state: SharedState | None = None
 
@@ -59,29 +58,33 @@ class IntakeAgent(ReActAgent):
         examples_json = json.dumps(self.few_shot_examples, ensure_ascii=False, indent=2)
         return (
             "请参考以下 few-shot 示例，并解析最后的用户场景。\n\n"
+            "请仅输出 JSON object，不要输出任何额外解释。\n\n"
             f"Few-shot examples:\n{examples_json}\n\n"
             f"User scenario:\n{state.raw_input.raw_text}"
         )
 
     def act(self, thought: str, tools: list[dict[str, Any]]) -> ToolResult:
-        """Call Claude with forced tool use and capture the tool input."""
+        """Call a Qwen-compatible OpenAI endpoint and capture structured JSON output."""
 
-        response = self.client.messages.create(
+        response = self.client.chat.completions.create(
             model=self.settings.model_name or DEFAULT_MODEL_NAME,
             max_tokens=512,
-            system=self.system_prompt,
-            messages=[{"role": "user", "content": thought}],
-            tools=tools,
-            tool_choice={"type": "tool", "name": "parse_scenario"},
+            temperature=0.1,
+            messages=[
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": thought},
+            ],
+            response_format=self._build_response_format(),
+            extra_body={"enable_thinking": False},
         )
-        tool_use = self._extract_tool_use(response)
+        payload = self._extract_payload(response)
 
-        validated = validate_parse_scenario_output(tool_use["input"])
+        validated = validate_parse_scenario_output(payload)
         shared_state = self._build_shared_state(validated)
 
         return ToolResult(
-            name=tool_use["name"],
-            tool_input=tool_use["input"],
+            name="parse_scenario",
+            tool_input=payload,
             output=IntakeResult(
                 parsed_fields=validated.parsed_fields,
                 invalid_fields=validated.invalid_fields,
@@ -89,7 +92,7 @@ class IntakeAgent(ReActAgent):
                 requires_followup=bool(shared_state.followup_prompt),
                 followup_prompt=shared_state.followup_prompt,
                 shared_state=shared_state,
-                raw_tool_input=tool_use["input"],
+                raw_tool_input=payload,
             ),
             raw_response=response,
             is_final=True,
@@ -154,10 +157,43 @@ class IntakeAgent(ReActAgent):
         return examples[:3]
 
     @staticmethod
-    def _build_parse_tool_schema() -> dict[str, Any]:
-        schema = IntakeAgent._parse_payload_json_schema()
-        schema["additionalProperties"] = False
-        schema["propertyOrdering"] = [
+    def _build_response_format() -> dict[str, Any]:
+        return {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "parse_scenario",
+                "schema": IntakeAgent._parse_payload_json_schema(),
+                "strict": True,
+            },
+        }
+
+    @staticmethod
+    def _extract_payload(response: Any) -> dict[str, Any]:
+        choices = getattr(response, "choices", None) or []
+        if choices:
+            message = getattr(choices[0], "message", None)
+            content = getattr(message, "content", None)
+            if isinstance(content, str) and content.strip():
+                try:
+                    payload = json.loads(content)
+                except json.JSONDecodeError as exc:
+                    preview = content.strip().replace("\n", "\\n")[:240]
+                    raise ValueError(
+                        "Qwen response did not contain valid JSON for parse_scenario. "
+                        f"Response preview: {preview}"
+                    ) from exc
+                if isinstance(payload, dict):
+                    return payload
+
+        preview = repr(response).replace("\n", "\\n")
+        raise ValueError(
+            "Qwen response did not include a valid parse_scenario JSON object. "
+            f"Response preview: {preview[:240]}"
+        )
+
+    @staticmethod
+    def _parse_payload_json_schema() -> dict[str, Any]:
+        field_order = [
             "region",
             "data_types",
             "cross_border",
@@ -165,30 +201,6 @@ class IntakeAgent(ReActAgent):
             "aigc_output",
             "data_volume_level",
         ]
-        return {
-            "name": "parse_scenario",
-            "description": "Parse a compliance scenario into structured fields.",
-            "input_schema": schema,
-        }
-
-    @staticmethod
-    def _extract_tool_use(response: Any) -> dict[str, Any]:
-        for block in getattr(response, "content", []):
-            if getattr(block, "type", None) != "tool_use":
-                continue
-            return {
-                "name": getattr(block, "name", "parse_scenario"),
-                "input": dict(getattr(block, "input", {}) or {}),
-            }
-
-        preview = repr(response).replace("\n", "\\n")
-        raise ValueError(
-            "Claude response did not include a parse_scenario tool call. "
-            f"Response preview: {preview[:240]}"
-        )
-
-    @staticmethod
-    def _parse_payload_json_schema() -> dict[str, Any]:
         return {
             "type": "object",
             "properties": {
@@ -223,5 +235,7 @@ class IntakeAgent(ReActAgent):
                     "description": "Volume of data processed",
                 },
             },
-            "required": [],
+            "required": field_order,
+            "additionalProperties": False,
+            "propertyOrdering": field_order,
         }

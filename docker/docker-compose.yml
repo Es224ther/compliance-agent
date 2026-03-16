@@ -1,0 +1,43 @@
+services:
+  backend:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../.env
+    environment:
+      CHROMA_HOST: chromadb
+      CHROMA_PORT: "8000"
+      EMBEDDING_MODEL: text-embedding-v3
+    depends_on:
+      - chromadb
+    volumes:
+      - ../data/kb:/app/data/kb
+      - ../data/regulations:/app/data/regulations
+    restart: on-failure
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8000/api/v1
+      NEXT_PUBLIC_WS_URL: ws://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    restart: unless-stopped
+
+volumes:
+  chroma_data:

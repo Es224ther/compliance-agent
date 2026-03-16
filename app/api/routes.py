@@ -6,7 +6,7 @@ import asyncio
 from typing import Literal
 from uuid import uuid4
 
-from fastapi import APIRouter, HTTPException, Query, Response, status
+from fastapi import APIRouter, HTTPException, Query, Request, Response, status
 from pydantic import BaseModel, ConfigDict
 
 from app.api.store import store
@@ -101,6 +101,21 @@ async def list_reports(
         )
         for report in reports
     ]
+
+
+@router.get("/evidence/{chunk_id}")
+async def get_evidence_full_text(chunk_id: str, request: Request) -> dict[str, str]:
+    """Return full evidence text by chunk_id for on-demand UI expansion."""
+
+    vector_store = getattr(request.app.state, "vector_store", None)
+    if vector_store is None:
+        raise HTTPException(status_code=503, detail="Knowledge base unavailable")
+
+    chunk = vector_store.get_by_id(chunk_id)
+    if not chunk:
+        raise HTTPException(status_code=404, detail="Chunk not found")
+
+    return {"chunk_id": chunk_id, "full_text": str(chunk.get("text", ""))}
 
 
 async def _process_analysis(scenario_input: ScenarioInput, report_id: str) -> None:

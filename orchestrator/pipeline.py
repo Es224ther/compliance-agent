@@ -190,7 +190,15 @@ async def _continue_from_analysis(
     progress_callback: Callable[[dict[str, Any]], Awaitable[None]] | None = None,
 ) -> SharedState:
     parsed_fields = state.parsed_fields
-    jurisdictions = router.route_by_region(parsed_fields)
+    raw_text = state.raw_input.raw_text if state.raw_input else ""
+    jurisdiction_set = router.determine_jurisdictions(parsed_fields, raw_text)
+    jurisdictions = [j for j in ("EU", "CN") if j in jurisdiction_set]
+
+    effective_region = router.jurisdictions_to_region(jurisdiction_set, parsed_fields.region)
+    if effective_region != parsed_fields.region:
+        parsed_fields = parsed_fields.model_copy(update={"region": effective_region})
+        state.parsed_fields = parsed_fields
+
     await _emit_event(
         progress_callback,
         {"step": "rag_retrieval", "status": "running", "message": "正在检索法规依据..."},
@@ -202,6 +210,7 @@ async def _continue_from_analysis(
         on_progress,
     )
     risk_assessment = await _get_risk_agent().run(parsed_fields)
+    risk_assessment.jurisdictions_covered = jurisdictions
     await _emit_event(
         progress_callback,
         {
