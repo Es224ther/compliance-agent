@@ -11,7 +11,9 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[快速开始](#-快速开始) · [功能特性](#-核心功能) · [技术架构](#-技术架构) · [开发指南](#-开发指南) · [免责声明](#%EF%B8%8F-免责声明)
+[快速开始](#快速开始) · [功能特性](#核心功能) · [技术架构](#技术架构) · [开发说明](#开发说明) · [免责声明](#免责声明)
+
+**[English](README_EN.md)**
 
 </div>
 
@@ -278,13 +280,13 @@ make eval     # 运行评测
 - 新法规放入 data/regulations/
 - 修改配置见 app/config/
 - 评测集见 eval/
-
+```
 ---
 
 ## Roadmap
 
-- [x] Phase 0 — 原型验证：RAG Pipeline + 3 个核心场景端到端
-- [x] Phase 1 — MVP：6 部法规、前端完整交互
+- [✓] Phase 0 — 原型验证：RAG Pipeline + 3 个核心场景端到端
+- [✓] Phase 1 — MVP：6 部法规、前端完整交互
 - [ ] Phase 2 — 扩展法域（美国 CCPA / Colorado AI Act）+ PDF 报告导出
 - [ ] Phase 3 — 平台化：与 API、Jira / Confluence 集成
 
