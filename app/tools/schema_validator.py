@@ -48,6 +48,13 @@ def validate_parse_scenario_output(payload: dict[str, Any]) -> SchemaValidationR
             sanitized[field_name] = None
             invalid_fields.append(field_name)
 
+    # Post-processing: Biometric/Financial/Behavioral imply Personal.
+    dt = sanitized.get("data_types")
+    if isinstance(dt, list) and dt:
+        implies_personal = {"Biometric", "Financial", "Behavioral"}
+        if any(t in implies_personal for t in dt) and "Personal" not in dt:
+            sanitized["data_types"] = ["Personal"] + dt
+
     return SchemaValidationResult(
         parsed_fields=ParsedFields(**sanitized),
         invalid_fields=invalid_fields,

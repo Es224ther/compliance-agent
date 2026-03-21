@@ -1,0 +1,53 @@
+test_id,category,difficulty,input_text,expected_region,expected_data_types,expected_cross_border,expected_third_party_model,expected_aigc_output,expected_data_volume_level
+parse_001,A-跨境数据训练,easy,我们计划把欧洲用户上传的短视频素材传回国内服务器，用于训练一个 AI 视频剪辑模型。训练完成后模型部署在国内，服务全球用户。视频中可能包含用户人脸。,EU+CN,"[""Personal"",""Biometric""]",true,false,false,null
+parse_002,A-跨境数据训练,easy,We plan to transfer short video clips uploaded by EU users back to our servers in China for training an AI video editing model. Videos may contain identifiable faces.,EU+CN,"[""Personal"",""Biometric""]",true,false,false,null
+parse_003,A-跨境数据训练,medium,拟将欧盟数据主体的生物特征数据通过加密通道传输至中国境内训练集群，数据量约200万条，训练完成后模型仅在境内部署。,EU+CN,"[""Personal"",""Biometric""]",true,false,false,Large
+parse_004,A-跨境数据训练,hard,有批海外的数据想拿回来练练模型，具体的还在讨论。,null,null,true,null,null,null
+parse_005,A-跨境数据训练,medium,东南亚用户的行为日志（点击流、浏览时长）存储在新加坡节点，现在要同步到上海数据中心用于推荐算法训练。不涉及人脸或指纹。,CN,"[""Personal"",""Behavioral""]",true,false,false,null
+parse_006,A-跨境数据训练,medium,法国用户上传的照片（含人像）将在法兰克福AWS节点进行模型微调，微调后的模型权重传回北京总部。照片本身不出欧盟。,EU+CN,"[""Personal"",""Biometric""]",true,false,false,null
+parse_007,A-跨境数据训练,easy,中国用户上传的文本评论数据，存放在国内阿里云服务器，用于训练一个情感分析模型。不涉及跨境。,CN,"[""Personal""]",false,false,false,null
+parse_008,A-跨境数据训练,hard,"We're collecting user browsing data from our EU platform and Chinese platform simultaneously. EU data stays in Frankfurt, CN data stays in Shanghai. Both are used for separate model training pipelines. No cross-border transfer.",EU+CN,"[""Personal"",""Behavioral""]",false,false,false,null
+parse_009,A-跨境数据训练,medium,德国用户的健康数据（含心率、睡眠数据）需要传到深圳研发中心，用于训练健康AI助手。数据量约50万用户。,EU+CN,"[""Personal"",""Biometric""]",true,false,false,Medium
+parse_010,A-跨境数据训练,hard,Our team wants to use some data for AI training. The data is from various sources.,null,null,null,null,null,null
+parse_011,A-跨境数据训练,medium,欧洲用户的匿名化浏览行为数据（已去除所有个人标识符）从爱尔兰服务器传到上海，用于训练广告推荐模型。日均数据量约10TB。,EU+CN,"[""Behavioral""]",true,false,false,Large
+parse_012,A-跨境数据训练,easy,把欧洲用户的购买记录和支付信息传回国内做风控模型训练。,EU+CN,"[""Personal"",""Financial""]",true,false,false,null
+parse_013,A-跨境数据训练,medium,意大利用户的语音指令录音（约3000小时）将通过专线传输至杭州AI实验室，用于微调语音识别大模型。语音中可能包含说话人声纹特征。,EU+CN,"[""Personal"",""Biometric""]",true,false,false,Large
+parse_014,A-跨境数据训练,hard,数据在境内存着呢，但是用了 AWS 的 GPU 在美国跑训练任务，数据通过 API 加密传过去再传回来。用户是中国的。,CN,null,true,false,false,null
+parse_015,A-跨境数据训练,easy,全部数据都在欧盟境内处理，用户也都是欧盟用户，训练一个文本分类模型。数据包含用户的姓名和邮箱。,EU,"[""Personal""]",false,false,false,null
+parse_016,A-跨境数据训练,medium,我们在全球有三个数据中心（法兰克福、上海、弗吉尼亚），用户数据会根据就近原则存储。现在想把三个节点的数据汇总到上海统一训练。用户涵盖欧美亚。,Global,"[""Personal""]",true,false,false,null
+parse_017,A-跨境数据训练,hard,想用联邦学习的方式，数据不出境，只传模型梯度。欧洲节点的用户图片数据（含人脸）留在法兰克福，中国节点的留在上海。,EU+CN,"[""Personal"",""Biometric""]",false,false,false,null
+parse_018,A-跨境数据训练,hard,小批量测试：取100条欧洲用户的文本数据，手动拷贝到国内笔记本电脑上跑实验。,EU+CN,"[""Personal""]",true,false,false,Small
+parse_019,B-第三方模型API,easy,开发团队希望接入 OpenAI GPT-4 API，对用户提交的文本进行后台内容审核。用户来自中国大陆。,CN,"[""Personal""]",true,true,false,null
+parse_020,B-第三方模型API,easy,我们要调用百度文心一言 API 来给欧洲用户提供智能客服。用户的聊天记录会发送给百度。,EU+CN,"[""Personal""]",true,true,true,null
+parse_021,B-第三方模型API,medium,Our app uses Claude API to analyze user-uploaded medical images for preliminary screening. Users are in the EU. The images are sent to Anthropic's US servers.,EU,"[""Personal"",""Biometric""]",true,true,true,null
+parse_022,B-第三方模型API,medium,使用阿里云通义千问 API 对国内用户提交的简历进行自动筛选和评分。简历包含姓名、身份证号、教育经历。,CN,"[""Personal""]",false,true,true,null
+parse_023,B-第三方模型API,hard,We self-host an open-source LLaMA model on our own servers in Shanghai. EU users' text queries are processed locally. No data leaves our infrastructure.,EU+CN,"[""Personal""]",true,false,true,null
+parse_024,B-第三方模型API,medium,接入讯飞星火API做语音转文字，用户是欧洲的，语音数据先传到讯飞在中国的服务器处理。,EU+CN,"[""Personal"",""Biometric""]",true,true,false,null
+parse_025,B-第三方模型API,easy,调用 Google Gemini API 处理中国用户上传的照片，生成照片描述文字。照片可能包含人脸。,CN,"[""Personal"",""Biometric""]",true,true,true,null
+parse_026,B-第三方模型API,hard,我们计划用第三方的模型，但还没决定用哪家。数据是用户的聊天记录。,null,"[""Personal""]",null,true,null,null
+parse_027,B-第三方模型API,medium,通过 API 网关将欧洲用户的查询请求转发给部署在中国境内的自研大模型。用户查询内容不含个人信息，仅为产品功能问答。,EU+CN,"[""Personal""]",true,false,true,null
+parse_028,B-第三方模型API,hard,"We're evaluating three LLM providers (OpenAI, Anthropic, Mistral) for our EU-based SaaS product. During evaluation, we'll send anonymized test data only. Production deployment TBD.",EU,null,null,true,null,Small
+parse_029,B-第三方模型API,medium,国内用户的金融交易数据发送到 Azure OpenAI（部署在美东区域）进行欺诈检测。每日处理约150万条交易记录。,CN,"[""Personal"",""Financial""]",true,true,false,Large
+parse_030,B-第三方模型API,easy,使用腾讯混元API对国内用户的文本做情感分析，数据不出境。,CN,"[""Personal""]",false,true,false,null
+parse_031,B-第三方模型API,hard,"Our EU SaaS product processes user documents through a pipeline: first OCR (self-hosted), then summarization via OpenAI API(in USA), then storage in our EU database. Documents may contain financial data, national IDs, and signatures.",EU,"[""Personal"",""Financial"",""Biometric""]",true,true,true,null
+parse_032,B-第三方模型API,medium,在欧盟境内部署 Azure OpenAI（西欧区域），处理欧盟用户的客服对话。数据不出欧盟。,EU,"[""Personal""]",false,true,true,null
+parse_033,B-第三方模型API,hard,多模态场景：中国用户上传图片+文字，图片通过自研视觉模型处理（本地），文字部分调用 GPT-4 API（美国），最终合成结果返回用户。,CN,"[""Personal""]",true,true,true,null
+parse_034,B-第三方模型API,medium,接入第三方 AI 翻译 API（服务器在海外），将中国用户输入的中文翻译为英文。用户输入可能包含商业机密但不含个人信息。,CN,[],true,true,true,null
+parse_035,C-AIGC内容标识,easy,业务团队计划向欧洲 B 端客户提供 AI 自动生成广告视频的 API。需要同时满足 EU AI Act 的深度伪造透明度义务和中国 AIGC 标识办法的元数据标签要求。,EU+CN,"[""Personal""]",true,false,true,null
+parse_036,C-AIGC内容标识,easy,我们的AI工具可以根据用户输入的文字描述生成图片，面向中国国内用户。生成的图片会发布在社交平台上。,CN,"[""Personal""]",false,false,true,null
+parse_037,C-AIGC内容标识,medium,"Our platform generates AI deepfake videos for marketing. EU clients use the API, videos are generated on our CN servers and delivered globally. We need to comply with EU AI Act transparency requirements.",EU+CN,"[""Personal"",""Biometric""]",true,false,true,null
+parse_038,C-AIGC内容标识,medium,AI生成的新闻摘要推送给中国用户，摘要由自研模型生成，不涉及跨境。但内容会在微信公众号发布。,CN,[],false,false,true,null
+parse_039,C-AIGC内容标识,hard,我们做了一个AI换脸的App，用户上传自己的照片，生成一个虚拟形象视频。国内和欧洲都有用户。生成的视频用户可以分享到社交媒体。,EU+CN,"[""Personal"",""Biometric""]",true,false,true,null
+parse_040,C-AIGC内容标识,easy,AI生成的代码补全建议展示给欧洲开发者用户。代码由自研模型生成。,EU,[],false,false,true,null
+parse_041,C-AIGC内容标识,medium,中欧合资企业开发AI虚拟主播，使用欧洲真人主播的形象数据训练，生成的虚拟主播视频在中国直播平台播出。,EU+CN,"[""Personal"",""Biometric""]",true,false,true,null
+parse_042,C-AIGC内容标识,hard,"B2B API service: our AI generates product descriptions in multiple languages for e-commerce clients globally. No personal data involved, purely product text.",Global,[],false,false,true,null
+parse_043,C-AIGC内容标识,medium,AI自动生成法律合同草稿，面向中国企业客户。合同中包含企业名称、法人信息等。用自研模型。,CN,"[""Personal""]",false,false,true,null
+parse_044,C-AIGC内容标识,hard,"We provide AI-generated voice cloning for EU users. Users upload voice samples, we generate synthetic speech. Voice data is processed on EU servers but model weights are synced from CN headquarters weekly.",EU+CN,"[""Personal"",""Biometric""]",true,false,true,null
+parse_045,边缘场景,hard,今天天气真好，你能帮我写首诗吗？,null,null,null,null,null,null
+parse_046,边缘场景,hard,我们要做一个内部知识库搜索工具，不涉及外部用户数据，不涉及AI生成内容，纯检索。数据在国内。,CN,[],false,false,false,null
+parse_047,边缘场景,medium,我们要在中国和欧洲同时上线一个AI功能，但我还没想好具体怎么做，先帮我评估一下风险。,EU+CN,null,null,null,null,null
+parse_048,边缘场景,easy,纯粹在中国境内，使用自研模型，处理企业内部非个人数据（设备传感器日志），不涉及任何个人信息。,CN,[],false,false,false,null
+parse_049,边缘场景,hard,我们的AI产品同时涉及：1) 欧洲用户人脸数据跨境传输 2) 调用OpenAI API处理 3) AI生成广告视频面向全球用户 4) 数据量超过500万条。,EU+CN,"[""Personal"",""Biometric""]",true,true,true,Large
+parse_050,边缘场景,medium,我司位于德国，仅服务德国本地用户。使用 Azure OpenAI 欧洲区域部署，数据不出欧盟。处理用户地址和电话号码。,EU,"[""Personal""]",false,true,null,null
+parse_051,边缘场景,hard,Training data includes publicly available EU court decisions (no PII). Model trained in CN. Inference served globally. Is this considered cross-border personal data transfer?,EU+CN,[],true,false,false,null
+parse_052,边缘场景,hard,张三（手机：13812345678，身份证：110101199001011234）负责的项目要把欧洲用户数据传到国内。请帮忙评估合规风险。联系邮箱：zhangsan@company.com,EU+CN,"[""Personal""]",true,null,null,null

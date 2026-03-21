@@ -6,15 +6,26 @@
       "data_types": ["Personal", "Biometric"],
       "cross_border": true,
       "third_party_model": false,
-      "aigc_output": null,
+      "aigc_output": false,
       "data_volume_level": null
     }
   },
   {
-    "input": "中国区风控团队计划分析用户消费金额和交易行为，数据只在境内自建模型中处理，不对外提供生成式内容。",
+    "input": "接入 OpenAI GPT-4 API 对用户提交的文本进行内容审核。用户来自中国大陆。审核结果仅用于系统内部判断是否拦截内容。",
     "output": {
       "region": "CN",
-      "data_types": ["Financial", "Behavioral"],
+      "data_types": ["Personal"],
+      "cross_border": true,
+      "third_party_model": true,
+      "aigc_output": false,
+      "data_volume_level": null
+    }
+  },
+  {
+    "input": "纯粹在中国境内，使用自研模型处理企业内部设备传感器日志，不涉及个人信息，不对外输出内容。",
+    "output": {
+      "region": "CN",
+      "data_types": [],
       "cross_border": false,
       "third_party_model": false,
       "aigc_output": false,
@@ -22,13 +33,79 @@
     }
   },
   {
-    "input": "这个新功能会同时服务欧洲和中国用户，采集基础账号信息和使用行为，是否会调用外部模型还未确定。",
+    "input": "使用通义千问 API 对国内用户提交的简历进行自动筛选和评分，结果展示给HR。简历包含姓名、身份证号、教育经历。",
+    "output": {
+      "region": "CN",
+      "data_types": ["Personal"],
+      "cross_border": false,
+      "third_party_model": true,
+      "aigc_output": true,
+      "data_volume_level": null
+    }
+  },
+  {
+    "input": "欧洲用户的匿名化浏览行为数据（已去除所有个人标识符）从爱尔兰传到上海训练模型。日均10TB。",
     "output": {
       "region": "EU+CN",
-      "data_types": ["Personal", "Behavioral"],
-      "cross_border": null,
-      "third_party_model": null,
-      "aigc_output": null,
+      "data_types": ["Behavioral"],
+      "cross_border": true,
+      "third_party_model": false,
+      "aigc_output": false,
+      "data_volume_level": "Large"
+    }
+  },
+  {
+    "input": "我们的AI工具根据用户输入的文字描述生成图片，面向中国国内用户，生成的图片会发布在社交平台上。",
+    "output": {
+      "region": "CN",
+      "data_types": ["Personal"],
+      "cross_border": false,
+      "third_party_model": false,
+      "aigc_output": true,
+      "data_volume_level": null
+    }
+  },
+  {
+    "input": "We self-host an open-source LLaMA model on our servers in Shanghai. EU users' text queries are processed locally. No data leaves our infrastructure.",
+    "output": {
+      "region": "EU+CN",
+      "data_types": ["Personal"],
+      "cross_border": true,
+      "third_party_model": false,
+      "aigc_output": true,
+      "data_volume_level": null
+    }
+  },
+  {
+    "input": "AI生成的新闻摘要推送给中国用户，摘要由自研模型生成，不涉及跨境。内容在微信公众号发布。",
+    "output": {
+      "region": "CN",
+      "data_types": [],
+      "cross_border": false,
+      "third_party_model": false,
+      "aigc_output": true,
+      "data_volume_level": null
+    }
+  },
+  {
+    "input": "接入第三方翻译API（DeepL），将中国用户输入的中文翻译为英文。用户输入不含个人信息。",
+    "output": {
+      "region": "CN",
+      "data_types": [],
+      "cross_border": true,
+      "third_party_model": true,
+      "aigc_output": true,
+      "data_volume_level": null
+    }
+  },
+  {
+    "input": "使用腾讯混元API对国内用户的文本做情感分析，分析结果供运营团队内部参考，数据不出境。",
+    "output": {
+      "region": "CN",
+      "data_types": ["Personal"],
+      "cross_border": false,
+      "third_party_model": true,
+      "aigc_output": false,
       "data_volume_level": null
     }
   }

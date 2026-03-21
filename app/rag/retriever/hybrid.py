@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from concurrent.futures import ThreadPoolExecutor
 from typing import Literal
 
@@ -8,6 +9,84 @@ from app.schemas.evidence import EvidenceChunk
 from app.rag.retriever.keyword import keyword_search
 from app.rag.retriever.reranker import rerank
 from app.rag.retriever.semantic import semantic_search
+
+
+# Bilingual term dictionary for cross-lingual query augmentation.
+_ZH_TO_EN: list[tuple[str, str]] = [
+    ("跨境", "cross-border transfer GDPR standard contractual clauses"),
+    ("出境", "cross-border transfer"),
+    ("第三方", "third-party processor"),
+    ("委托处理", "data processor agreement"),
+    ("个人信息", "personal data GDPR"),
+    ("同意", "consent"),
+    ("生物特征", "biometric data"),
+    ("人脸", "facial recognition biometric"),
+    ("透明度", "transparency obligations"),
+    ("生成内容", "AI-generated content"),
+    ("标识", "labeling disclosure"),
+    ("数据处理", "data processing"),
+    ("数据传输", "data transfer"),
+    ("敏感", "sensitive personal information"),
+    ("合规", "compliance"),
+    ("协议", "agreement contract"),
+    ("用户数据", "personal data GDPR"),
+]
+
+_EN_TO_ZH: list[tuple[str, str]] = [
+    ("cross-border", "跨境传输"),
+    ("transfer", "数据传输"),
+    ("third party", "第三方委托处理"),
+    ("third-party", "第三方委托处理"),
+    ("entrust", "委托处理"),
+    ("processor", "数据处理者"),
+    ("personal data", "个人信息"),
+    ("personal information", "个人信息"),
+    ("consent", "同意"),
+    ("biometric", "生物特征"),
+    ("transparency", "透明度"),
+    ("ai-generated", "AI生成内容"),
+    ("ai generated", "AI生成内容"),
+    ("labeling", "标识"),
+    ("disclosure", "披露标识"),
+    ("sensitive", "敏感信息"),
+]
+
+
+def _contains_cjk(text: str) -> bool:
+    return any("\u4e00" <= ch <= "\u9fff" for ch in text)
+
+
+def _augment_query_cross_lingual(query: str, jurisdiction: str) -> str:
+    """Append bilingual keywords to improve reranker cross-lingual scoring."""
+    is_cjk = _contains_cjk(query)
+
+    # Chinese query searching EU (English) regulations
+    if is_cjk and jurisdiction == "EU":
+        supplements: list[str] = []
+        for zh_term, en_term in _ZH_TO_EN:
+            if zh_term in query:
+                supplements.append(en_term)
+        if supplements:
+            return f"{query} ({', '.join(supplements)})"
+
+    # English query searching CN (Chinese) regulations
+    if not is_cjk and jurisdiction == "CN":
+        query_lower = query.lower()
+        # Split into words for stem-level matching (handles plurals etc.)
+        query_words = set(re.findall(r"[a-z]+", query_lower))
+        supplements = []
+        for en_term, zh_term in _EN_TO_ZH:
+            # Check phrase match first, then fall back to stem-word overlap.
+            if en_term in query_lower:
+                supplements.append(zh_term)
+            else:
+                en_words = set(en_term.split())
+                if en_words and all(any(qw.startswith(ew) or ew.startswith(qw) for qw in query_words) for ew in en_words):
+                    supplements.append(zh_term)
+        if supplements:
+            return f"{query} ({', '.join(supplements)})"
+
+    return query
 
 
 def hybrid_search(
@@ -31,7 +110,10 @@ def hybrid_search(
         keyword_hits = keyword_future.result()
 
     merged = _merge_candidates(semantic_hits, keyword_hits, limit=20)
-    ranked = rerank(query=query, candidates=merged, top_k=max(1, top_k))
+
+    # Augment query for cross-lingual reranking.
+    rerank_query = _augment_query_cross_lingual(query, jurisdiction)
+    ranked = rerank(query=rerank_query, candidates=merged, top_k=max(1, top_k))
     return [_to_evidence_chunk(item) for item in ranked]
 
 
@@ -97,7 +179,16 @@ def _to_evidence_chunk(item: dict) -> EvidenceChunk:
     else:
         tag_list = []
 
-    return EvidenceChunk(
+    # Expose merged article IDs so callers can match against absorbed short articles.
+    merged_raw = item.get("merged_article_ids", "")
+    if isinstance(merged_raw, str) and merged_raw.strip():
+        merged_ids = [mid.strip() for mid in merged_raw.split(",") if mid.strip()]
+    elif isinstance(merged_raw, list):
+        merged_ids = [str(mid).strip() for mid in merged_raw if str(mid).strip()]
+    else:
+        merged_ids = []
+
+    chunk = EvidenceChunk(
         chunk_id=str(item.get("chunk_id", "")),
         regulation=str(item.get("regulation", "")),
         jurisdiction=str(item.get("jurisdiction", "")),
@@ -113,6 +204,9 @@ def _to_evidence_chunk(item: dict) -> EvidenceChunk:
         rerank_score=_to_float_or_none(item.get("rerank_score")),
         low_confidence=bool(item.get("low_confidence", False)),
     )
+    # Attach merged IDs as extra attribute for downstream matching.
+    chunk._merged_article_ids = merged_ids  # type: ignore[attr-defined]
+    return chunk
 
 
 def _dedupe(values: list[str]) -> list[str]:

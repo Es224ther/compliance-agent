@@ -1,9 +1,17 @@
 [
   {
     "id": "demo-001",
-    "title": "Cross-border data transfer",
-    "description": "A US-based SaaS company transfers EU customer data to servers in India without a data processing agreement.",
-    "jurisdiction": ["EU", "US", "IN"],
-    "domains": ["data_privacy", "GDPR"]
+    "title": "欧洲用户视频数据跨境AI训练",
+    "text": "我们计划把欧洲用户上传的短视频素材传回国内服务器，用于训练一个 AI 视频剪辑模型。训练完成后模型部署在国内，服务全球用户，视频中包含用户的人脸画面。"
+  },
+  {
+    "id": "demo-002",
+    "title": "调用OpenAI API处理国内用户数据",
+    "text": "开发团队希望接入 OpenAI GPT-4 API，对用户提交的文本与图片内容进行处理。用户来自中国大陆。"
+  },
+  {
+    "id": "demo-003",
+    "title": "欧洲AIGC广告视频API合规",
+    "text": "向欧洲 B 端客户提供 AI 自动生成广告视频的 API，需要满足 EU AI Act 透明度要求和中国 AIGC 标识合规。"
   }
 ]

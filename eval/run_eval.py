@@ -1,204 +1,289 @@
-"""Evaluation harness for retrieval mode."""
+"""Main evaluation entry point for Compliance Agent."""
 
 from __future__ import annotations
 
 import argparse
-import csv
-import statistics
+import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from app.schemas import ParsedFields
-from app.rag.retriever.hybrid import hybrid_search
-
-
-DEFAULT_RETRIEVAL_CASES = ROOT / "eval" / "test_cases" / "retrieval_tests.csv"
-DEFAULT_RESULTS_PATH = ROOT / "eval" / "results.csv"
+DEFAULT_OUTPUT_DIR = ROOT / "eval" / "results"
+TEST_CASES_DIR = ROOT / "eval" / "test_cases"
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run evaluation harness.")
+    parser = argparse.ArgumentParser(
+        description="Compliance Agent Evaluation Harness",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     parser.add_argument(
         "--mode",
         required=True,
-        choices=["retrieval"],
-        help="Evaluation mode.",
+        choices=["all", "parsing", "retrieval", "guardrail", "hallucination"],
+        help="Evaluation mode to run.",
     )
     parser.add_argument(
-        "--cases",
-        default=str(DEFAULT_RETRIEVAL_CASES),
-        help="CSV file containing evaluation cases.",
+        "--output-dir",
+        default=str(DEFAULT_OUTPUT_DIR),
+        help="Directory for result JSON files (default: eval/results).",
     )
     parser.add_argument(
-        "--output",
-        default=str(DEFAULT_RESULTS_PATH),
-        help="CSV file where per-case results are written.",
+        "--delay",
+        type=float,
+        default=1.0,
+        help="Seconds to wait between LLM calls (default: 1.0).",
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Print per-case progress.",
     )
     return parser
 
 
+def run_parsing(output_dir: Path, delay: float, verbose: bool) -> dict:
+    from eval.evaluators.parsing_eval import run_parsing_eval
+
+    cases_path = TEST_CASES_DIR / "parsing_tests.csv"
+    output_path = output_dir / "parsing_result.json"
+    print(f"\n{'='*50}")
+    print("Running PARSING evaluation...")
+    result = run_parsing_eval(cases_path, output_path, delay=delay, verbose=verbose)
+    rate = result["success_rate"]
+    met = result["target_met"]
+    print(f"  解析成功率: {rate:.1%}  目标: ≥{result['target']:.0%}  {'✅ PASS' if met else '❌ FAIL'}")
+    print(f"  结果写入: {output_path}")
+    return result
+
+
+def run_retrieval(output_dir: Path, verbose: bool) -> dict:
+    from eval.evaluators.retrieval_eval import run_retrieval_eval
+
+    cases_path = TEST_CASES_DIR / "retrieval_tests.csv"
+    output_path = output_dir / "retrieval_result.json"
+    print(f"\n{'='*50}")
+    print("Running RETRIEVAL evaluation...")
+    result = run_retrieval_eval(cases_path, output_path, verbose=verbose)
+    rate = result["hit_rate"]
+    met = result["target_met"]
+    cl_rate = result["cross_lingual_hit_rate"]
+    cl_met = result["cross_lingual_target_met"]
+    print(f"  Top-5 命中率: {rate:.1%}  目标: ≥{result['target']:.0%}  {'✅ PASS' if met else '❌ FAIL'}")
+    print(f"  双语检索命中率: {cl_rate:.1%}  目标: ≥{result['cross_lingual_target']:.0%}  {'✅ PASS' if cl_met else '❌ FAIL'}")
+    print(f"  结果写入: {output_path}")
+    return result
+
+
+def run_guardrail(output_dir: Path, delay: float, verbose: bool) -> dict:
+    from eval.evaluators.guardrail_eval import run_guardrail_eval
+
+    cases_path = TEST_CASES_DIR / "guardrail_tests.csv"
+    output_path = output_dir / "guardrail_result.json"
+    print(f"\n{'='*50}")
+    print("Running GUARDRAIL evaluation...")
+    result = run_guardrail_eval(cases_path, output_path, delay=delay, verbose=verbose)
+    acc = result["accuracy"]
+    met = result["target_met"]
+    print(f"  追问触发准确率: {acc:.1%}  目标: ≥{result['target']:.0%}  {'✅ PASS' if met else '❌ FAIL'}")
+    print(f"  结果写入: {output_path}")
+    return result
+
+
+def run_hallucination(output_dir: Path, verbose: bool) -> dict:
+    from eval.evaluators.hallucination_eval import run_hallucination_eval
+
+    output_path = output_dir / "hallucination_result.json"
+    print(f"\n{'='*50}")
+    print("Running HALLUCINATION evaluation...")
+    result = run_hallucination_eval(output_path, verbose=verbose)
+    rate = result["hallucination_rate"]
+    met = result["target_met"]
+    print(f"  幻觉率: {rate:.1%}  目标: ≤{result['target']:.0%}  {'✅ PASS' if met else '❌ FAIL'}")
+    print(f"  结果写入: {output_path}")
+    return result
+
+
+def print_summary_report(results: dict[str, dict]) -> None:
+    """Print human-readable summary table to terminal."""
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+
+    parsing = results.get("parsing", {})
+    retrieval = results.get("retrieval", {})
+    guardrail = results.get("guardrail", {})
+    hallucination = results.get("hallucination", {})
+
+    lines = [
+        "═" * 51,
+        "  Compliance Agent — 评测报告",
+        f"  {now}",
+        "═" * 51,
+        "",
+        f"  {'指标':<22} {'实际值':>8}  {'目标值':>8}  {'状态'}",
+        "  " + "─" * 47,
+    ]
+
+    def row(label: str, value: float | None, target: float, lower_is_better: bool = False) -> str:
+        if value is None:
+            return f"  {label:<22} {'N/A':>8}  {'':>8}  ⚠️  SKIP"
+        if lower_is_better:
+            met = value <= target
+            target_str = f"≤ {target:.0%}"
+        else:
+            met = value >= target
+            target_str = f"≥ {target:.0%}"
+        status = "✅ PASS" if met else "❌ FAIL"
+        return f"  {label:<22} {value:.1%}   {target_str:>8}  {status}"
+
+    lines.append(row(
+        "解析成功率",
+        parsing.get("success_rate"),
+        parsing.get("target", 0.90),
+    ))
+    lines.append(row(
+        "RAG Top-5 命中率",
+        retrieval.get("hit_rate"),
+        retrieval.get("target", 0.70),
+    ))
+    lines.append(row(
+        "双语检索命中率",
+        retrieval.get("cross_lingual_hit_rate"),
+        retrieval.get("cross_lingual_target", 0.60),
+    ))
+    lines.append(row(
+        "追问触发准确率",
+        guardrail.get("accuracy"),
+        guardrail.get("target", 0.80),
+    ))
+    lines.append(row(
+        "幻觉率",
+        hallucination.get("hallucination_rate"),
+        hallucination.get("target", 0.10),
+        lower_is_better=True,
+    ))
+
+    lines.append("  " + "─" * 47)
+
+    all_met = all(
+        r.get("target_met", False)
+        for r in results.values()
+        if r
+    )
+    overall = "✅ ALL PASS" if all_met else "❌ SOME FAILED"
+    lines.append(f"  总体结果：{overall}")
+    lines.append("")
+    lines.append("  失败用例详情见 eval/results/")
+    lines.append("═" * 51)
+
+    print("\n" + "\n".join(lines))
+
+
+def save_summary(results: dict[str, dict], output_dir: Path) -> None:
+    metrics: dict[str, dict] = {}
+
+    if "parsing" in results:
+        r = results["parsing"]
+        metrics["parsing_success_rate"] = {
+            "value": r.get("success_rate"),
+            "target": r.get("target"),
+            "met": r.get("target_met"),
+        }
+
+    if "retrieval" in results:
+        r = results["retrieval"]
+        metrics["retrieval_hit_rate"] = {
+            "value": r.get("hit_rate"),
+            "target": r.get("target"),
+            "met": r.get("target_met"),
+        }
+        metrics["cross_lingual_hit_rate"] = {
+            "value": r.get("cross_lingual_hit_rate"),
+            "target": r.get("cross_lingual_target"),
+            "met": r.get("cross_lingual_target_met"),
+        }
+
+    if "guardrail" in results:
+        r = results["guardrail"]
+        metrics["guardrail_accuracy"] = {
+            "value": r.get("accuracy"),
+            "target": r.get("target"),
+            "met": r.get("target_met"),
+        }
+
+    if "hallucination" in results:
+        r = results["hallucination"]
+        metrics["hallucination_rate"] = {
+            "value": r.get("hallucination_rate"),
+            "target": r.get("target"),
+            "met": r.get("target_met"),
+        }
+
+    overall_pass = all(m.get("met", False) for m in metrics.values())
+
+    summary = {
+        "timestamp": datetime.utcnow().isoformat(timespec="seconds"),
+        "overall_pass": overall_pass,
+        "metrics": metrics,
+        "detail_files": {
+            "parsing": "eval/results/parsing_result.json",
+            "retrieval": "eval/results/retrieval_result.json",
+            "guardrail": "eval/results/guardrail_result.json",
+            "hallucination": "eval/results/hallucination_result.json",
+        },
+    }
+
+    summary_path = output_dir / "eval_summary.json"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"\n  汇总报告: {summary_path}")
+
+
 def main() -> None:
     args = build_parser().parse_args()
-    if args.mode != "retrieval":
-        raise ValueError(f"Unsupported mode: {args.mode}")
-    run_retrieval_eval(Path(args.cases), Path(args.output))
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
+    mode = args.mode
+    delay = args.delay
+    verbose = args.verbose
+    results: dict[str, dict] = {}
 
-def run_retrieval_eval(cases_path: Path, output_path: Path) -> None:
-    if not cases_path.exists():
-        raise FileNotFoundError(f"Test case file not found: {cases_path}")
-
-    rows = list(csv.DictReader(cases_path.open(encoding="utf-8")))
-    if not rows:
-        raise ValueError(f"No retrieval test cases found in {cases_path}")
-
-    results: list[dict[str, object]] = []
-    top5_hits = 0
-    bilingual_hits = 0
-    bilingual_total = 0
-    rerank_scores: list[float] = []
-
-    for row in rows:
-        query = row["query"].strip()
-        expected_regulation = row["expected_regulation"].strip()
-        expected_article_id = row["expected_article_id"].strip()
-        jurisdiction = row["jurisdiction"].strip()
-        parsed_fields = _build_parsed_fields(query=query, jurisdiction=jurisdiction)
-
+    if mode in ("parsing", "all"):
         try:
-            retrieved = hybrid_search(query=query, parsed_fields=parsed_fields, top_k=5)
-            actual_ids = [item.article_id for item in retrieved]
-            hit_top5 = any(_article_id_matches(expected_article_id, aid) for aid in actual_ids)
-            top1 = retrieved[0] if retrieved else None
-            top1_regulation = top1.regulation if top1 else ""
-            top1_article_id = top1.article_id if top1 else ""
-            top1_rerank_score = top1.rerank_score if top1 and top1.rerank_score is not None else 0.0
-            rerank_scores.append(float(top1_rerank_score))
-            error = ""
+            results["parsing"] = run_parsing(output_dir, delay=delay, verbose=verbose)
         except Exception as exc:
-            retrieved = []
-            actual_ids = []
-            hit_top5 = False
-            top1_regulation = ""
-            top1_article_id = ""
-            top1_rerank_score = 0.0
-            error = f"{type(exc).__name__}: {exc}"
+            print(f"  [ERROR] Parsing eval failed: {exc}")
+            results["parsing"] = {}
 
-        if hit_top5:
-            top5_hits += 1
+    if mode in ("retrieval", "all"):
+        try:
+            results["retrieval"] = run_retrieval(output_dir, verbose=verbose)
+        except Exception as exc:
+            print(f"  [ERROR] Retrieval eval failed: {exc}")
+            results["retrieval"] = {}
 
-        is_bilingual_case = _contains_cjk(query) and jurisdiction == "EU"
-        if is_bilingual_case:
-            bilingual_total += 1
-            if hit_top5:
-                bilingual_hits += 1
+    if mode in ("guardrail", "all"):
+        try:
+            results["guardrail"] = run_guardrail(output_dir, delay=delay, verbose=verbose)
+        except Exception as exc:
+            print(f"  [ERROR] Guardrail eval failed: {exc}")
+            results["guardrail"] = {}
 
-        results.append(
-            {
-                "query": query,
-                "expected_regulation": expected_regulation,
-                "expected_article_id": expected_article_id,
-                "jurisdiction": jurisdiction,
-                "top_hit_regulation": top1_regulation,
-                "top_hit_article_id": top1_article_id,
-                "hit_top5": int(hit_top5),
-                "top1_rerank_score": round(float(top1_rerank_score), 4),
-                "returned_count": len(retrieved),
-                "error": error,
-            }
-        )
+    if mode in ("hallucination", "all"):
+        try:
+            results["hallucination"] = run_hallucination(output_dir, verbose=verbose)
+        except Exception as exc:
+            print(f"  [ERROR] Hallucination eval failed: {exc}")
+            results["hallucination"] = {}
 
-    _write_results(output_path, results)
-
-    total_cases = len(rows)
-    hit_rate = top5_hits / total_cases if total_cases else 0.0
-    avg_rerank = statistics.mean(rerank_scores) if rerank_scores else 0.0
-    bilingual_hit_rate = bilingual_hits / bilingual_total if bilingual_total else 0.0
-
-    print(f"cases={total_cases}")
-    print(f"top5_hit_rate={hit_rate:.2%}")
-    print(f"avg_rerank_score={avg_rerank:.4f}")
-    print(f"bilingual_hit_rate={bilingual_hit_rate:.2%}")
-    print(f"results_csv={output_path}")
-
-
-def _build_parsed_fields(*, query: str, jurisdiction: str) -> ParsedFields:
-    region = _jurisdiction_to_region(jurisdiction)
-    query_lower = query.lower()
-
-    data_types: list[str] = []
-    if any(term in query_lower for term in ("biometric", "face", "facial")) or any(
-        term in query for term in ("生物特征", "人脸")
-    ):
-        data_types.append("Biometric")
-    elif any(term in query_lower for term in ("personal", "consent", "privacy")) or any(
-        term in query for term in ("个人信息", "同意")
-    ):
-        data_types.append("Personal")
-
-    return ParsedFields(
-        region=region,
-        data_types=data_types or None,
-        cross_border=_matches_any(query_lower, query, ("cross-border", "transfer", "third country"), ("跨境", "出境", "境外", "第三国")),
-        third_party_model=_matches_any(query_lower, query, ("third party", "external", "vendor", "processor"), ("第三方", "外部", "处理者", "供应商")),
-        aigc_output=_matches_any(query_lower, query, ("generate", "synthetic", "chatbot", "deepfake"), ("生成", "合成", "标识", "聊天机器人")),
-    )
-
-
-def _jurisdiction_to_region(jurisdiction: str) -> str:
-    if jurisdiction == "EU":
-        return "EU"
-    if jurisdiction == "CN":
-        return "CN"
-    return "Global"
-
-
-def _matches_any(query_lower: str, query_original: str, en_terms: tuple[str, ...], zh_terms: tuple[str, ...]) -> bool:
-    if any(term in query_lower for term in en_terms):
-        return True
-    if any(term in query_original for term in zh_terms):
-        return True
-    return False
-
-
-def _contains_cjk(text: str) -> bool:
-    return any("\u4e00" <= ch <= "\u9fff" for ch in text)
-
-
-def _article_id_matches(expected: str, actual: str) -> bool:
-    """Match article IDs, treating split chunks (Article_28_1) as equivalent to base (Article 28)."""
-    if expected == actual:
-        return True
-    # Normalize: replace underscores with spaces, strip trailing part number
-    import re
-    normalized = re.sub(r"\s*_?\d+$", "", actual.replace("_", " ")).strip()
-    return expected == normalized
-
-
-def _write_results(path: Path, rows: list[dict[str, object]]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = [
-        "query",
-        "expected_regulation",
-        "expected_article_id",
-        "jurisdiction",
-        "top_hit_regulation",
-        "top_hit_article_id",
-        "hit_top5",
-        "top1_rerank_score",
-        "returned_count",
-        "error",
-    ]
-    with path.open("w", encoding="utf-8", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
+    if mode == "all":
+        save_summary(results, output_dir)
+        print_summary_report(results)
 
 
 if __name__ == "__main__":
     main()
-

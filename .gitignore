@@ -42,6 +42,7 @@ data/kb/summary_cache.json
 
 # 8. 评测输出
 eval/results*.csv
+eval/results/
 
 # 9. 本地任务文档
 task_*.md

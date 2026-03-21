@@ -2,7 +2,7 @@
 
 # Compliance Agent
 
-**AI Compliance Pre-Check Assistant for Global Products**
+**AI Compliance Pre-Check Assistant for Global AI Products**
 
 Describe your business scenario in plain language and get an AI product compliance pre-check report in 30 seconds
 
@@ -13,7 +13,7 @@ Describe your business scenario in plain language and get an AI product complian
 
 [Quick Start](#quick-start) · [Features](#core-features) · [Architecture](#technical-architecture) · [Development](#development) · [Disclaimer](#disclaimer)
 
-**[中文文档](README.md)**
+**[中文](README.md)**
 
 </div>
 

@@ -154,7 +154,7 @@ class IntakeAgent(ReActAgent):
     @staticmethod
     def _load_examples(path: Path) -> list[dict[str, Any]]:
         examples = json.loads(path.read_text(encoding="utf-8"))
-        return examples[:3]
+        return examples[:10]
 
     @staticmethod
     def _build_response_format() -> dict[str, Any]:

@@ -65,9 +65,14 @@ def _build_search_text(chunk: dict[str, Any]) -> str:
     else:
         tags_text = str(tags)
 
+    # Include merged article IDs so short articles remain searchable.
+    merged_ids = chunk.get("merged_article_ids", [])
+    merged_text = ", ".join(str(mid) for mid in merged_ids) if merged_ids else ""
+
     parts = [
         str(chunk.get("regulation", "")),
         str(chunk.get("article_id", "")),
+        merged_text,
         str(chunk.get("article_title", "")),
         str(chunk.get("chapter", "")),
         tags_text,

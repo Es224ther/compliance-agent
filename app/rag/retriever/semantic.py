@@ -28,7 +28,8 @@ def semantic_search(
 
     if tag_filter:
         wanted = {tag.strip() for tag in tag_filter if tag.strip()}
-        filtered: list[dict[str, Any]] = []
+        # Score candidates by number of matching tags (any-match, not all-match).
+        scored: list[tuple[int, dict[str, Any]]] = []
         for item in candidates:
             tags_value = item.get("tags", "")
             if isinstance(tags_value, str):
@@ -37,11 +38,15 @@ def semantic_search(
                 tags = {str(tag).strip() for tag in tags_value if str(tag).strip()}
             else:
                 tags = set()
-            if wanted.issubset(tags):
-                filtered.append(item)
-        # Only apply tag filter if it leaves enough candidates; otherwise fall back.
+            overlap = len(wanted & tags)
+            scored.append((overlap, item))
+        # Keep candidates with at least one matching tag; fall back to all if too few.
+        filtered = [item for overlap, item in scored if overlap > 0]
         if len(filtered) >= top_n:
-            candidates = filtered
+            # Re-sort: more tag overlap first, then preserve original distance ordering.
+            scored_filtered = [(o, it) for o, it in scored if o > 0]
+            scored_filtered.sort(key=lambda x: -x[0])
+            candidates = [it for _, it in scored_filtered]
 
     output: list[dict[str, Any]] = []
     for item in candidates[:top_n]:

@@ -1,2 +1,0 @@
-id,scenario_id,expected_risk_level,expected_findings_count,notes
-tc-001,demo-001,high,3,Baseline GDPR cross-border transfer case

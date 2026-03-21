@@ -230,15 +230,13 @@ def _merge_short_chunks(chunks: list[dict[str, Any]], *, min_tokens: int) -> lis
 
         if merged:
             prev = merged[-1]
-            prev["text"] = f"{prev['text']}\n{chunk['text']}".strip()
-            prev["token_count"] = estimate_token_count(prev["text"])
+            _absorb_chunk(prev, chunk)
             idx += 1
             continue
 
         if idx + 1 < len(chunks):
             nxt = chunks[idx + 1]
-            nxt["text"] = f"{chunk['text']}\n{nxt['text']}".strip()
-            nxt["token_count"] = estimate_token_count(nxt["text"])
+            _absorb_chunk(nxt, chunk, prepend=True)
             idx += 1
             continue
 
@@ -246,6 +244,31 @@ def _merge_short_chunks(chunks: list[dict[str, Any]], *, min_tokens: int) -> lis
         idx += 1
 
     return merged
+
+
+def _absorb_chunk(
+    target: dict[str, Any],
+    source: dict[str, Any],
+    *,
+    prepend: bool = False,
+) -> None:
+    """Merge *source* into *target*, preserving the source article_id."""
+    if prepend:
+        target["text"] = f"{source['text']}\n{target['text']}".strip()
+    else:
+        target["text"] = f"{target['text']}\n{source['text']}".strip()
+    target["token_count"] = estimate_token_count(target["text"])
+
+    # Track absorbed article_ids so they remain discoverable during retrieval.
+    absorbed: list[str] = target.get("merged_article_ids", [])
+    src_id = source.get("article_id", "")
+    if src_id and src_id not in absorbed:
+        absorbed.append(src_id)
+    # Also carry over any ids the source itself had absorbed.
+    for prev_id in source.get("merged_article_ids", []):
+        if prev_id not in absorbed:
+            absorbed.append(prev_id)
+    target["merged_article_ids"] = absorbed
 
 
 def _build_chunk(

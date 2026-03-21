@@ -188,6 +188,12 @@ class VectorStore:
         else:
             tags_value = str(tags)
 
+        merged_ids = chunk.get("merged_article_ids", [])
+        if isinstance(merged_ids, list):
+            merged_value = ",".join(str(mid) for mid in merged_ids)
+        else:
+            merged_value = str(merged_ids)
+
         metadata = {
             "regulation": str(chunk.get("regulation", "")),
             "jurisdiction": str(chunk.get("jurisdiction", "")),
@@ -198,6 +204,7 @@ class VectorStore:
             "token_count": int(chunk.get("token_count", 0) or 0),
             "summary": str(chunk.get("summary", "")),
             "tags": tags_value,
+            "merged_article_ids": merged_value,
         }
         return metadata
 

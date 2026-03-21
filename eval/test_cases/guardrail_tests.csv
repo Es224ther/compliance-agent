@@ -1,0 +1,23 @@
+test_id,input_text,missing_fields,should_trigger_followup,expected_questions_about,difficulty
+guard_001,我们想用用户数据训练模型。,"[""region"",""data_types"",""cross_border""]",true,"region, data_types, cross_border",easy
+guard_002,要把数据传到海外。,"[""region"",""data_types""]",true,"region, data_types",easy
+guard_003,We want to use AI for our product.,"[""region"",""data_types"",""cross_border""]",true,"region, data_types, cross_border",easy
+guard_004,计划调用一个第三方API处理数据。,"[""region"",""data_types"",""cross_border""]",true,"region, data_types, cross_border",easy
+guard_005,欧洲用户的数据要用一下。,"[""data_types"",""cross_border""]",true,"data_types, cross_border",medium
+guard_006,把用户的个人信息传到另一个国家做AI训练。,"[""region""]",true,region,medium
+guard_007,处理一些敏感数据，用于模型优化。,"[""region"",""data_types"",""cross_border""]",true,"region, data_types, cross_border",medium
+guard_008,Need to evaluate compliance for our new feature.,"[""region"",""data_types"",""cross_border""]",true,"region, data_types, cross_border",hard
+guard_009,跨境传输数据做训练，涉及人脸。,"[""region""]",true,region,medium
+guard_010,在国内用AI生成一些内容。,"[""data_types""]",true,data_types,medium
+guard_011,帮我看看合不合规。,"[""region"",""data_types"",""cross_border""]",true,"region, data_types, cross_border",hard
+guard_012,"Data from multiple regions, still deciding on architecture.","[""region"",""data_types"",""cross_border""]",true,"region, data_types, cross_border",hard
+guard_013,我们在欧洲有业务，想用AI功能。,"[""data_types"",""cross_border""]",true,"data_types, cross_border",medium
+guard_014,中国用户的数据，不知道算不算跨境。,"[""data_types"",""cross_border""]",true,"data_types, cross_border",hard
+guard_015,有个AI项目涉及用户隐私，求评估。,"[""region"",""cross_border""]",true,"region, cross_border",medium
+guard_016,想做一个全球化的AI产品，不知道有什么合规要求。,"[""data_types"",""cross_border""]",true,"data_types, cross_border",hard
+guard_017,AIGC相关的合规问题想咨询一下。,"[""region"",""data_types"",""cross_border""]",true,"region, data_types, cross_border",hard
+guard_018,我们计划把欧洲用户上传的短视频素材传回国内服务器，用于训练一个AI视频剪辑模型。视频中可能包含用户人脸。,[],false,none,easy
+guard_019,中国用户的文本数据，存在国内阿里云，用于自研情感分析模型训练。不涉及跨境、不涉及第三方、不涉及AIGC输出。,[],false,none,easy
+guard_020,EU users' biometric data (facial images) transferred to China for AI model training. Third-party API (OpenAI) used for data preprocessing. Generated content served to EU users. Data volume: 2 million records.,[],false,none,easy
+guard_021,向欧洲B端客户提供AI自动生成广告视频的API。系统需满足EU AI Act深度伪造透明度义务，并在生成文件中注入符合中国AIGC标识办法的隐式元数据标签。,[],false,none,medium
+guard_022,纯国内场景：使用百度文心一言API（国内部署）处理中国用户的文本查询，生成AI回复。数据不出境，用户量约5000人。,[],false,none,easy
